@@ -1,0 +1,25 @@
+# ArmorGrp_Res.dat of Essence 563 and later: what each figure wears for an armor piece. A row of Armorgrp.dat names
+# its rows here by its field res: one row for each figure that wears the piece, and several pieces share their rows.
+# The client has one such table for its three worlds. The texts are numbers of texts in L2GameDataName.dat. The table
+# of E563 reads so.
+format  1
+file    ArmorGrp_Res.dat
+title   Essence 563 and later
+
+list uint records {
+    ushort  id                  # the number that res of Armorgrp.dat names, from 1
+    byte    figure              # the mesh type of the figure, as the rows of Chargrp.dat are numbered: 0 MFighter,
+                                # 1 FFighter, 2 MDarkElf, 3 FDarkElf, 4 MDwarf, 5 FDwarf, 6 MElf, 7 FElf, 8 MMagic,
+                                # 9 FMagic, 10 MOrc, 11 FOrc, 12 MShaman, 13 FShaman, 14 MKamael, 15 FKamael,
+                                # 16 MErtheia, 17 FErtheia, 18 and 19 the Sylph, 20 and 21 the High Elves, 22 the Crow
+    list byte name meshes       # the body part meshes, such as Fighter.MFighter_m001_u
+    byte    addCount
+    list addCount name addMeshes  # the additional meshes, such as the wings and skirts of Kamael
+    list byte name textures     # the textures of the meshes
+    list byte name addTextures  # the textures of the additional meshes
+    list addCount addValues {   # two numbers for each additional mesh
+        byte    first
+        byte    second
+    }
+    ushort  hideMask            # the parts of the figure the piece hides. 0x20 hides all the hair
+}

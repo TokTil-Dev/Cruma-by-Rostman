@@ -1,0 +1,28 @@
+# CharHeadExgrp.dat of Essence 542 and later: the heads of the pawn classes that have a figure of their own, such as
+# MHuman_DeathKnight: the hair of each style and the faces. The main world names the Shine Maker, the Waker and the
+# Crow, the Classic world, whose table the Essence world takes, the Death Knights, the Vanguard Rider, the Assassins,
+# the Warg, the Blood Rose and the Crow.
+format  1
+file    CharHeadExgrp.dat
+title   Essence 542 and later
+
+# One hair mesh and its texture, or None in both.
+struct Hair {
+    name    mesh
+    name    texture
+}
+
+list uint records {
+    name    class                   # the pawn class in LineageWarrior.u, such as MHuman_DeathKnight
+    list 11 rows {                  # rows of hair. The first is the hair a player chooses; the others hold other hair,
+                                    # such as the m008 and m009 meshes, and the last is empty in E542
+        list 15 styles {            # one for each hair style, from 0. A style the class does not have is None
+            Hair    front           # None in the first row of every class
+            Hair    back            # the hair at the back of the head, such as Fighter.MFighter_DK_m000_bh
+        }
+    }
+    list uint name faces            # three face meshes, the first of them the face a character starts with
+    list uint name faceTextures     # the texture of each face, such as LineageFaceTex.MFighter_DK_m000_t00_f
+    list uint name unknownMeshes    # three meshes of the Death Knights, such as Fighter.MFighter_DK_m000_s, else None
+    list uint name unknownTextures  # three hair textures of the Death Knights, else None
+}

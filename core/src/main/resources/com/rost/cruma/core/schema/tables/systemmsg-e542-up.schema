@@ -1,0 +1,10 @@
+# SystemMsg-eu.dat of Essence 542: the form of 196 with one number more after the voice.
+# The tables of Essence 542 read so, in both worlds.
+format  1
+file    SystemMsg-*.dat
+title   Essence 542 and later
+like    196
+
+after voice {
+    uint    extra           # 0 in nearly every row
+}

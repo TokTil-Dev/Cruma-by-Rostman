@@ -1,0 +1,14 @@
+# SystemMsg-e.dat of Chronicle 3 to Chronicle 5: after the colour only a sound and the text on the screen.
+format  1
+file    SystemMsg-*.dat
+title   Chronicle 3 to Chronicle 5
+
+list uint records {
+    uint    id              # the MsgNo of a cut scene
+    uint    unknown
+    fstring message         # the line
+    uint    group
+    uint    color           # red, green, blue and alpha bytes
+    fstring sound
+    fstring screenMessage
+}

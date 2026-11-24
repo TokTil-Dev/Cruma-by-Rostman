@@ -1,0 +1,11 @@
+title: Edit
+what-edit-changes
+first-steps
+select-and-move
+place-from-the-library
+sculpt-the-ground
+paint-the-ground
+lights
+surfaces-and-materials
+save-and-check
+limits

@@ -1,0 +1,23 @@
+# SkillName-e.dat of P152 and later: a list of texts first, then the rows, whose texts are numbers in that list.
+format  1
+file    SkillName-*.dat
+title   P152 and later
+
+list compact strings {
+    fstring text
+    uint    index           # its own place in the list
+}
+use names strings.text
+
+list uint records {
+    ushort  id
+    byte    level
+    ushort  subLevel
+    name    name
+    name    desc            # the description, written on the first level only. $s1, $s2... stand for values
+    name    values          # the values of $s1, $s2... at this level, separated by ;
+    name    enchantName
+    name    enchantNameValues
+    name    enchantDesc
+    name    enchantDescValues
+}

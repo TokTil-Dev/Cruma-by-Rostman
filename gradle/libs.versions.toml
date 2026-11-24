@@ -1,0 +1,40 @@
+[versions]
+java = "26"
+lwjgl = "3.4.3"
+imgui-java = "1.92.7.1"
+typesafe-config = "1.4.9"
+glm = "0.9.9.1-15"
+kool = "0.9.79"
+eclipse-collections = "13.0.0"
+fastjson2 = "2.0.65"
+jorbis = "0.0.17"
+log4j = "2.26.1"
+jetbrains-annotations = "26.1.0"
+foojay = "1.0.0"
+
+[libraries]
+typesafe-config = { module = "com.typesafe:config", version.ref = "typesafe-config" }
+imgui-java-app = { module = "io.github.spair:imgui-java-app", version.ref = "imgui-java" }
+lwjgl-core = { module = "org.lwjgl:lwjgl", version.ref = "lwjgl" }
+lwjgl-glfw = { module = "org.lwjgl:lwjgl-glfw", version.ref = "lwjgl" }
+lwjgl-stb = { module = "org.lwjgl:lwjgl-stb", version.ref = "lwjgl" }
+lwjgl-bgfx = { module = "org.lwjgl:lwjgl-bgfx", version.ref = "lwjgl" }
+lwjgl-opengl = { module = "org.lwjgl:lwjgl-opengl", version.ref = "lwjgl" }
+lwjgl-jemalloc = { module = "org.lwjgl:lwjgl-jemalloc", version.ref = "lwjgl" }
+lwjgl-tinyfd = { module = "org.lwjgl:lwjgl-tinyfd", version.ref = "lwjgl" }
+glm = { module = "io.github.kotlin-graphics:glm", version.ref = "glm" }
+kool = { module = "io.github.kotlin-graphics:kool", version.ref = "kool" }
+eclipse-collections-api = { module = "org.eclipse.collections:eclipse-collections-api", version.ref = "eclipse-collections" }
+eclipse-collections = { module = "org.eclipse.collections:eclipse-collections", version.ref = "eclipse-collections" }
+fastjson2 = { module = "com.alibaba.fastjson2:fastjson2", version.ref = "fastjson2" }
+jorbis = { module = "org.jcraft:jorbis", version.ref = "jorbis" }
+log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
+log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+
+[bundles]
+lwjgl = ["lwjgl-core", "lwjgl-glfw", "lwjgl-stb", "lwjgl-bgfx", "lwjgl-opengl", "lwjgl-jemalloc", "lwjgl-tinyfd"]
+eclipse-collections = ["eclipse-collections-api", "eclipse-collections"]
+
+[plugins]
+foojay-resolver = { id = "org.gradle.toolchains.foojay-resolver-convention", version.ref = "foojay" }

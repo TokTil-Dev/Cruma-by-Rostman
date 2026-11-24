@@ -1,0 +1,17 @@
+# Chargrp.dat of Gracia Final: the layout of High Five with four rows of hair in place of five. Read on two Gracia
+# Final clients. The Engine.dll of one of them keeps the number of rows too,
+# FL2CharData::HairAcceStyleNum: 4, where High Five 273 has 5.
+format  1
+file    Chargrp.dat
+title   Gracia Final
+like    High Five
+
+replace rows {
+    list 4 rows {                   # rows of hair. The first is the hair a player chooses, and a hair accessory
+                                    # picks another by its mesh name, see HairRows
+        list 15 styles {            # one for each hair style, from 0. A style the figure does not have is empty
+            Hair    front           # the hair over the forehead, such as Fighter.MFighter_m000_m00_ah
+            Hair    back            # the hair at the back of the head, such as Fighter.MFighter_m000_m00_bh
+        }
+    }
+}

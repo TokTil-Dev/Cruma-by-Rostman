@@ -1,0 +1,14 @@
+# The sections of Home, in order: one folder of en/ a line. The glossary, terms, is not one of them.
+start
+view
+geodata
+spawns
+areas
+npcs
+events
+edit
+effects
+scenes
+export
+tables
+agent

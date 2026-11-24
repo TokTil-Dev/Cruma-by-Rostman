@@ -1,0 +1,20 @@
+# PostEffectData.dat of P152 and later: the name is the number of a text in L2GameDataName.dat, and two numbers more
+# end the row.
+format  1
+file    PostEffectData.dat
+title   P152 and later
+
+list uint records {
+    uint    id              # the PostEffectID of a cut scene
+    int     nameNumber      # the number of its name in L2GameDataName.dat
+    uint    type            # 0 a change of luma and chroma, 3 a motion blur
+    uint    mode            # 0 from the first values to the second, 1 from none to the second, 2 from the first to none
+    float   seconds         # how long a change of colour takes, or 0 for at once
+    uint    keepsChroma     # not 0: a change of colour leaves Cb and Cr
+    list 3 float first      # a motion blur has its alpha and the milliseconds it takes to come to it here
+    list 3 float second
+    int     reserve1
+    int     reserve2
+    uint    colorGrading1
+    uint    colorGrading2
+}

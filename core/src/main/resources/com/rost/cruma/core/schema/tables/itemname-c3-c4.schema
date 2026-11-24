@@ -1,0 +1,13 @@
+# ItemName-e.dat of Chronicle 3 and 4: the name and the description of each item in the language of the
+# client. The texts stand in the rows. The tables of Chronicle 3 and Chronicle 4 read so.
+format  1
+file    ItemName-*.dat
+title   Chronicle 3 and 4
+
+list uint records {
+    uint    id                  # the item id of the server
+    string  name
+    string  add                 # what follows the name, such as a grade
+    fstring desc                # the description. \n stands for a new line
+    int     popup
+}

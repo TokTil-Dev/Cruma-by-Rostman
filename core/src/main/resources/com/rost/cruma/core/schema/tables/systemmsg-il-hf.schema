@@ -1,0 +1,22 @@
+# SystemMsg-e.dat of Interlude to High Five: the lines a cut scene shows by their number, with the sound and the
+# voice as texts.
+format  1
+file    SystemMsg-*.dat
+title   Interlude to High Five
+
+list uint records {
+    uint    id              # the MsgNo of a cut scene
+    uint    unknown
+    fstring message         # the line
+    uint    group
+    uint    color           # red, green, blue and alpha bytes
+    fstring sound
+    fstring voice
+    uint    window
+    uint    font
+    uint    lifeTime
+    uint    background
+    uint    animation
+    fstring screenMessage
+    fstring type
+}

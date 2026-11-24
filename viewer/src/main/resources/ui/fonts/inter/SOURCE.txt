@@ -1,0 +1,12 @@
+InterVariable.ttf
+https://raw.githubusercontent.com/rsms/inter/353b61b9f4430d5f420d56605a6e7993e0941470/docs/font-files/InterVariable.ttf
+SHA256 4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf
+
+LICENSE.txt
+https://raw.githubusercontent.com/rsms/inter/353b61b9f4430d5f420d56605a6e7993e0941470/LICENSE.txt
+SHA256 262481e844521b326f5ecd053e59b98c8b2da78c8ee1bdbb6e8174305e54935a
+
+CrumaUI-SemiBold.ttf
+Derived from the InterVariable.ttf above using fontTools 4.59.0 varLib.instancer,
+wght=600, opsz=18. Family renamed to Cruma UI. Same SIL Open Font License.
+Used for native HUD headings; no runtime font generation is required.

@@ -1,0 +1,23 @@
+# SystemMsg-e.dat with the sound and the voice as numbers of texts in L2GameDataName.dat and three texts at the end.
+# No client Cruma knows has this form: it is kept from the reader before the schemas.
+format  1
+file    SystemMsg-*.dat
+title   Sounds by number and three texts
+
+list uint records {
+    uint    id              # the MsgNo of a cut scene
+    uint    unknown
+    fstring message         # the line
+    uint    group
+    uint    color           # red, green, blue and alpha bytes
+    int     sound           # the number of a text in L2GameDataName.dat
+    int     voice           # the number of a text in L2GameDataName.dat
+    uint    window
+    uint    font
+    uint    lifeTime
+    uint    background
+    uint    animation
+    fstring screenMessage
+    fstring screenParameter
+    fstring type
+}

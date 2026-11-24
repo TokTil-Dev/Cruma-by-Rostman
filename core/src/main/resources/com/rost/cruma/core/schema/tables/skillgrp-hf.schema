@@ -1,0 +1,29 @@
+# Skillgrp.dat of High Five: the form of Gracia Final with an enchant icon and a tag.
+format  1
+file    Skillgrp.dat
+title   High Five
+
+list uint records {
+    uint    id
+    uint    level
+    uint    iconType
+    uint    operateType
+    uint    mpConsume
+    int     range           # how far from its target the caster casts it, -1 on the caster itself
+    int     style           # cast_style: 0 plays the effects at once, with no cast
+    float   hit             # the hit time in seconds
+    int     kind            # 0 physical, 1 magic, 2 static, 3 a dance or a song
+    string  anim            # the animation it plays, such as E
+    string  effect          # its effect class
+    string  icon            # the texture of its icon
+    string  iconPanel
+    uint    debuff
+    uint    enchanted
+    uint    enchantSkillLevel
+    fstring enchantIcon
+    uint    hpConsume
+    uint    rumbleSelf
+    uint    rumbleTarget
+    uint    gaugeTime
+    fstring additionalTag
+}

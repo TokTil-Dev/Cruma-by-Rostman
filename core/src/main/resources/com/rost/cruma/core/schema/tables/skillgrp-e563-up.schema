@@ -1,0 +1,10 @@
+# Skillgrp.dat of Essence 563 and later: the table of Essence 542 with four bytes for the automatic use of a macro,
+# where Essence 542 has one. The tables of E563 read so, in its three worlds.
+format  1
+file    Skillgrp.dat
+title   Essence 563 and later
+like    Essence 542 and later
+
+replace macros.automaticUse {
+    uint    automaticUse        # 1 to 3 in the files of the game
+}

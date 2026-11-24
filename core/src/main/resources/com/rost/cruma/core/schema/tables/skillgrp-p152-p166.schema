@@ -1,0 +1,35 @@
+# Skillgrp.dat of P152 to 166: smaller numbers, a list of animations, and the texts as numbers of texts in
+# L2GameDataName.dat.
+format  1
+file    Skillgrp.dat
+title   P152 to 166
+
+list uint records {
+    ushort  id
+    byte    level
+    ushort  subLevel
+    byte    operateType
+    byte    resistCast
+    byte    magicType
+    short   mpConsume
+    int     range           # how far from its target the caster casts it, -1 on the caster itself
+    byte    style           # cast_style: 0 plays the effects at once, with no cast
+    float   hit             # the hit time in seconds
+    float   coolTime
+    float   reuseDelay
+    int     effectPoint
+    byte    kind            # 0 physical, 1 magic, 2 static, 3 a dance or a song
+    short   originSkill
+    byte    isDouble
+    list uint name anims    # the animations; the client plays one of them at random
+    name    effect          # its effect class
+    name    icon            # the texture of its icon
+    int     iconPanel       # the number of a text in L2GameDataName.dat
+    byte    debuff
+    byte    iconType
+    byte    enchantSkillLevel
+    int     enchantIcon     # the number of a text in L2GameDataName.dat
+    short   hpConsume
+    byte    rumbleSelf
+    byte    rumbleTarget
+}

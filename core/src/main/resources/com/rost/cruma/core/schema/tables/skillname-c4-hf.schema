@@ -1,0 +1,13 @@
+# SkillName-e.dat of Chronicle 4 to High Five: the name and the description of each skill and level.
+format  1
+file    SkillName-*.dat
+title   Chronicle 4 to High Five
+
+list uint records {
+    uint    id
+    uint    level
+    fstring name
+    fstring desc            # the description; \n breaks a line
+    fstring enchantName
+    fstring enchantDesc
+}

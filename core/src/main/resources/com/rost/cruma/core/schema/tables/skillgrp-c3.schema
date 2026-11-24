@@ -1,0 +1,19 @@
+# Skillgrp.dat of Chronicle 3: the form of Chronicle 4 with one number after the icon in place of six.
+format  1
+file    Skillgrp.dat
+title   Chronicle 3
+
+list uint records {
+    uint    id
+    uint    level
+    uint    operateType
+    uint    mpConsume
+    int     range           # how far from its target the caster casts it, -1 on the caster itself
+    int     style           # cast_style: 0 plays the effects at once, with no cast
+    float   hit             # the hit time in seconds
+    int     kind            # 0 physical, 1 magic, 2 static, 3 a dance or a song
+    string  anim            # the animation it plays, such as E
+    string  effect          # its effect class
+    string  icon            # the texture of its icon
+    uint    extraEffect
+}

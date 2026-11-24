@@ -1,0 +1,31 @@
+# npcgrp.dat of Interlude and Gracia: how the client draws each NPC.
+# The texts stand in the rows. The tables of Interlude and Gracia Final read so.
+format  1
+file    npcgrp.dat
+title   Interlude and Gracia
+
+list uint records {
+    uint    id                  # the NPC id of npcdata.txt
+    string  class               # the class of the pawn, such as LineageMonster.gremlin
+    string  mesh                # the skeletal mesh, such as LineageMonsters.gremlin_m00
+    list uint string textures   # the textures that replace the materials of the mesh, by slot
+    list uint string secondTextures
+    list compact uint properties
+    float   speed
+    list uint string unknownNames
+    list uint string attackSounds
+    list uint string defenseSounds
+    list uint string damageSounds
+    list uint decorations {
+        string decoration
+        float  scale
+    }
+    list compact uint quests
+    string  attackEffect
+    uint    unknown
+    float   soundVolume
+    float   soundRadius
+    float   soundRandom
+    uint    quest               # a quest the NPC belongs to
+    uint    classLimit          # the classes it serves
+}

@@ -1,0 +1,62 @@
+# Weapongrp.dat of Essence 563 and later: how each weapon is held, its icon and its sounds.
+# The texts are numbers of texts in L2GameDataName.dat. The rows of Essence 542 with these changes: one byte stands
+# after inventoryType, the meshes and their textures moved to WeaponGrp_Res.dat, whose row the last field names, and
+# the row ends with numbers only, with no list of enchant effects. The tables of E563 read so, in its three worlds.
+format  1
+file    Weapongrp.dat
+title   Essence 563 and later
+
+list uint records {
+    byte    tag
+    uint    id                  # the item id of the server
+    byte    dropType
+    byte    dropAnimType
+    byte    dropRadius
+    byte    dropHeight
+    list uint drops {
+        name    dropMesh
+        list uint name dropTextures
+        name    dropEffect      # an effect on the item on the ground, such as LineageEffect2.devil_wp_shooter_b, or None
+        name    dropEffectPlace # where the effect stands, such as Drop_Socket, or None
+    }
+    name    icon                # the icon of the inventory, such as icon.weapon_small_sword_i00
+    name    icon2
+    name    icon3
+    name    icon4
+    name    icon5
+    short   durability
+    short   weight
+    byte    material
+    byte    crystallizable
+    list byte uint quests
+    byte    color
+    byte    attribution
+    name    iconPanel
+    name    dropSoundType
+    byte    inventoryType
+    byte    unknownFlag         # 1 in a quarter of the rows of the Essence world, 0 in the other worlds
+    byte    bodyPart            # 62 for a weapon of the right hand, 7 for one of two hands, 63 for the left hand
+    byte    handness            # as in Essence 542
+    list byte name itemSounds
+    name    dropSound
+    name    equipSound
+    name    effect
+    byte    randomDamage
+    byte    weaponType
+    byte    crystalType
+    byte    mpConsume
+    byte    soulshotCount
+    byte    spiritshotCount
+    short   curvature
+    byte    unknown
+    byte    canEquipHero
+    byte    magicWeapon
+    short   unknown1            # -1 in a tenth of the rows, else a small number
+    byte    unknown2
+    byte    unknown3
+    list 9 byte unknown4        # 0 0 0 0 1 0 0 0 0 in every row
+    byte    normalEnsoulSlots
+    byte    specialEnsoulSlots
+    ushort  res                 # the id of its row in WeaponGrp_Res.dat, which names its meshes and textures. 0 for
+                                # a weapon with none
+}

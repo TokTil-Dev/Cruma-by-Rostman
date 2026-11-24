@@ -1,0 +1,14 @@
+# SkillSoundgrp.dat of Essence 542: the rows of P152 with 24 voices of each kind in place of 19. The first 18 are
+# those of P152, then come the Sylph, the High Elves, a male figure whose voices are named MCrow, and one more.
+# The tables of Essence 542 read so, in both worlds.
+format  1
+file    SkillSoundgrp.dat
+title   Essence 542 and later
+like    P152 and later
+
+replace castVoices {
+    list 24 name castVoices  # a voice of each player figure as the cast starts, MFighter to MCrow and one more
+}
+replace shotVoices {
+    list 24 name shotVoices  # a voice of each player figure as the spell leaves
+}

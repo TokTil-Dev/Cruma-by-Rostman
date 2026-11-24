@@ -1,0 +1,69 @@
+# Chargrp.dat of Essence 542 and later: how the client builds the figure of each mesh type, such as MFighter or
+# FHighElf: its hair, faces and bodies, then sounds, voices and the class. The table has no count: it holds 24 rows,
+# one for each mesh type from 0, which the Engine.dll of Essence 542 gives each race and sex (User::GetMeshType).
+# Rows 20, 21 and 23 of the main world and row 23 of Classic are empty: no names, and race, class and sex 4294967295.
+# The rows of the main world and of Classic read so, to the end of the table.
+format  1
+file    Chargrp.dat
+title   Essence 542 and later
+
+# One hair mesh and its texture, or None in both, as in CharHeadExgrp.dat.
+struct Hair {
+    name    mesh
+    name    texture
+}
+
+# The meshes of one part of the body and their textures, then lists that the figures Cruma builds do not use.
+struct Body {
+    list uint name meshes           # such as Fighter.MFighter_m001_u, or the one mesh of the High Elves and the Crow
+    list uint name textures         # the textures of the meshes, two for a body of one mesh
+    list uint name unknown1         # additional meshes, such as the Kamael's Kamael.MKamael_m000_w_ad00, else empty
+    list uint name unknown2         # the textures of those meshes
+    list byte byte unknown3         # two numbers with the Kamael's additional meshes, 119 and 108, else empty
+    list byte byte unknown4         # two numbers with the Kamael's additional meshes, 95 and 95, else empty
+    list uint name unknown5         # the underwear mesh, such as BranchFighter.g_mfighter_underwear1_u
+    list uint name unknown6         # the texture of the underwear
+    list uint name unknown7         # one more additional mesh of the Kamael, else empty
+    list uint name unknown8         # its texture
+}
+
+list 24 records {
+    list 11 rows {                  # rows of hair, as in CharHeadExgrp.dat. The first is the hair a player chooses
+        list 15 styles {            # one for each hair style, from 0. A style the figure does not have is None
+            Hair    front           # the hair over the forehead, such as Fighter.MFighter_m000_m00_ah
+            Hair    back            # the hair at the back of the head, such as HighElf.FHighElf_m001_bh_d_ani
+        }
+    }
+    list uint name faces            # the face meshes, the first of them the face a character starts with. The Sylph
+                                    # name the faces of the Ertheia
+    list uint name faceTextures     # the texture of each face
+    list uint name unknown1         # the Ertheia's ears, else None
+    list uint name unknown2         # the textures of the ears, or of the Dwarves' beards
+    list 54 unknownBodies {         # parts of the body that no row of E542 names
+        Body    body
+    }
+    Body    gloves                  # the hands, such as Fighter.MFighter_m001_g
+    Body    chest                   # the upper body, such as Fighter.MFighter_m001_u. The High Elves and the Crow name
+                                    # their body of one mesh here, and no other part
+    Body    legs                    # the legs, such as Fighter.MFighter_m001_l
+    Body    feet                    # the feet, such as Fighter.MFighter_m001_b
+    list 6 moreBodies {             # parts of the body that no row of E542 names
+        Body    body
+    }
+    name    unknown3                # an effect of an attack
+    uint    unknown4                # 12 in every row that names a class
+    list compact name unknown5      # sounds of an attack
+    list compact name unknown6      # sounds of a defence
+    list compact name unknown7      # sounds of damage
+    list 20 unknown8 {              # voices
+        list uint name unknown9
+    }
+    list uint name unknown10        # more voices
+    uint    unknown11               # 0, 8 or 512
+    fstring class                   # the pawn class in LineageWarrior.u, such as MCrow, or empty
+    uint    race                    # the race, such as 31 for the High Elves
+    uint    classId                 # a class id, such as 236 for FHighElf
+    uint    sex                     # the sex, 0 for a man and 1 for a woman
+    list uint name unknown12
+    list uint name unknown13        # more hair textures of some female figures, such as FElf.FElf_m008_t00_m01_bh
+}

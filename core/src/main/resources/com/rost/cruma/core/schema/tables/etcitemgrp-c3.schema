@@ -1,0 +1,35 @@
+# EtcItemgrp.dat of Chronicle 3: the items that are neither weapons nor armor, and their icons.
+# The table of Chronicle 4 with one drop mesh and one drop texture, four empty texts before the icon and
+# none after it. The tables of Chronicle 3 read so.
+format  1
+file    EtcItemgrp.dat
+title   Chronicle 3
+
+list uint records {
+    uint    tag
+    uint    id                  # the item id of the server
+    uint    dropType
+    uint    dropAnimType
+    uint    dropRadius
+    uint    dropHeight
+    uint    unknown1
+    string  dropMesh
+    string  dropTexture
+    string  emptyText1
+    string  emptyText2
+    string  emptyText3
+    string  emptyText4
+    string  icon                # the icon of the inventory, such as icon.etc_adena_i00
+    uint    durability
+    uint    weight
+    uint    material
+    uint    crystallizable
+    uint    unknown2
+    list uint string meshes
+    list uint string textures
+    string  dropSound
+    string  equipSound
+    uint    stackable
+    uint    etcItemType
+    uint    crystalType
+}

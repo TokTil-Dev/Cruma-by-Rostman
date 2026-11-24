@@ -1,0 +1,12 @@
+# AnimationCombo.dat of P152 and later: the parts of an animation that a skill names, such as E.
+format  1
+file    AnimationCombo.dat
+title   P152 and later
+
+list uint records {
+    name    name            # the animation, such as E
+    fstring first           # the kinds of the pawn's animation it plays in order, such as CastMid
+    fstring second
+    fstring third
+    int     loop            # the part that repeats until the cast ends, from 0, or -1 for none
+}

@@ -1,0 +1,25 @@
+# ItemName-e.dat of P152 to 166: the name and the description of each item in the language of the client.
+# The name is the number of a text in L2GameDataName.dat. The tables of P152, 162 and 166 read so.
+format  1
+file    ItemName-*.dat
+title   P152 to 166
+
+list uint records {
+    uint    id                  # the item id of the server
+    name    name
+    fstring add                 # what follows the name, such as a grade
+    fstring desc                # the description. \n stands for a new line
+    short   popup
+    fstring defaultAction
+    uint    useOrder
+    short   nameClass
+    byte    color
+    name    tooltipTexture
+    byte    tradable
+    byte    droppable
+    byte    destructible
+    byte    privateStore
+    byte    keepType
+    byte    npcTrade
+    byte    commissionStore
+}

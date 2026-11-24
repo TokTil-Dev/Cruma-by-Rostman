@@ -1,0 +1,12 @@
+# Chargrp.dat of P196: the layout of P152 to 166 with 16 lists of voices in place of 15. Read on the main world and
+# the Classic world of P196.
+format  1
+file    Chargrp.dat
+title   P196
+like    P152 to 166
+
+replace records.unknown8 {
+    list 16 unknown8 {              # voices
+        list uint name unknown9
+    }
+}

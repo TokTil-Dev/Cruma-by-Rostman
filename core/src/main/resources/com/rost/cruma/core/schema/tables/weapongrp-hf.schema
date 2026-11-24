@@ -1,0 +1,99 @@
+# Weapongrp.dat of High Five: how the client draws each weapon, and its icon.
+# The table of Gracia Final with six numbers and the icons of augmentation at the end of a row, in place of
+# eight numbers. The tables of High Five read so.
+format  1
+file    Weapongrp.dat
+title   High Five
+
+list uint records {
+    uint    tag
+    uint    id                  # the item id of the server
+    uint    dropType
+    uint    dropAnimType
+    uint    dropRadius
+    uint    dropHeight
+    uint    unknown1
+    string  dropMesh1
+    string  dropMesh2
+    string  dropMesh3
+    string  dropTexture1
+    string  dropTexture2
+    string  dropTexture3
+    string  dropTexture4
+    string  dropTexture5
+    string  dropTexture6
+    string  dropTexture7
+    string  dropTexture8
+    string  dropTexture9
+    uint    dropTextureCount1   # how many of the drop textures each drop mesh takes
+    uint    dropTextureCount2
+    uint    dropTextureCount3
+    string  icon                # the icon of the inventory, such as icon.weapon_small_sword_i00
+    string  icon2
+    string  icon3
+    string  icon4
+    string  icon5
+    int     durability
+    uint    weight
+    uint    material
+    uint    crystallizable
+    uint    unknown2            # the client leaves it as it finds it
+    list uint uint quests
+    uint    color
+    string  iconPanel
+    uint    bodyPart
+    uint    handness            # 0 shield, 1 one-handed, 2 two-handed, 3 dual, 4 pole, 5 bow
+    uint    meshCount
+    list meshCount string meshes   # two for a dual weapon
+    list meshCount uint meshValues
+    list uint string textures   # the textures of the meshes
+    list uint string itemSounds
+    string  dropSound
+    string  equipSound
+    string  effect
+    uint    randomDamage
+    uint    pAttack
+    uint    mAttack
+    uint    weaponType
+    uint    crystalType
+    uint    critical
+    int     hitModify
+    int     avoidModify
+    uint    shieldDefense
+    uint    shieldRate
+    uint    speed
+    uint    mpConsume
+    uint    soulshotCount
+    uint    spiritshotCount
+    uint    curvature
+    uint    unknown3
+    int     canEquipHero
+    uint    unknown4
+    list meshCount string meshEffects
+    list meshCount meshEffectValues {
+        float   value1
+        float   value2
+        float   value3
+        float   value4
+        float   value5
+    }
+    list meshCount string meshRanges
+    list meshCount meshRangeValues {
+        float   value1
+        float   value2
+        float   value3
+        float   value4
+        float   value5
+        float   value6
+    }
+    int     unknown5
+    int     unknown6
+    int     unknown7
+    int     unknown8
+    int     unknown9
+    int     unknown10
+    string  variationIcon1
+    string  variationIcon2
+    string  variationIcon3
+    string  variationIcon4
+}

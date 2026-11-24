@@ -1,0 +1,10 @@
+# SkillName-eu.dat of Essence 542: the rows of P152 with a uint id and a ushort level.
+# The tables of Essence 542 read so, in both worlds.
+format  1
+file    SkillName-*.dat
+title   Essence 542 and later
+like    P152 and later
+
+replace id { uint id }
+replace level { ushort level }
+replace subLevel { ushort subLevel }

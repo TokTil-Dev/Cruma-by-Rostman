@@ -1,0 +1,115 @@
+diff --git a/src/renderer_vk.cpp b/src/renderer_vk.cpp
+--- a/src/renderer_vk.cpp
++++ b/src/renderer_vk.cpp
+@@ -9,6 +9,8 @@
+ #	include <bx/pixelformat.h>
+ #	include "renderer_vk.h"
+ #	include "video_vk.h"
++#	include <bgfx/c99/bgfx.h>
++#	include <atomic>
+ 
+ #if BX_PLATFORM_OSX
+ #	import <Cocoa/Cocoa.h>
+@@ -19,6 +21,8 @@
+ 
+ namespace bgfx { namespace vk
+ {
++	static std::atomic<uint32_t> s_crumaVideoMemoryFallbacks { 0 };
++
+ 	static char s_viewName[BGFX_CONFIG_MAX_VIEWS][BGFX_CONFIG_MAX_VIEW_NAME];
+ 
+ 	inline void setViewType(ViewId _view, const bx::StringView _str)
+@@ -4841,6 +4845,32 @@
+ 			}
+ 
+ 
++			VkResult result = allocateMemoryOfType(requirements, propertyFlags, memory);
++
++			if (VK_SUCCESS != result
++			&&  0 != (propertyFlags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
++			&&  0 <= selectMemoryType(requirements->memoryTypeBits, propertyFlags) )
++			{
++				m_memoryLru.evictAll();
++				result = allocateMemoryOfType(requirements, propertyFlags, memory);
++
++				if (VK_SUCCESS != result)
++				{
++					const VkMemoryPropertyFlags systemFlags = propertyFlags & ~VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
++					result = allocateMemoryOfType(requirements, systemFlags, memory);
++
++					if (VK_SUCCESS == result)
++					{
++						s_crumaVideoMemoryFallbacks.fetch_add(1, std::memory_order_relaxed);
++					}
++				}
++			}
++
++			return result;
++		}
++
++		VkResult allocateMemoryOfType(const VkMemoryRequirements* requirements, VkMemoryPropertyFlags propertyFlags, DeviceMemoryAllocationVK* memory)
++		{
+ 			VkMemoryAllocateInfo ma;
+ 			ma.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+ 			ma.pNext = NULL;
+@@ -5492,14 +5522,22 @@
+ 		if (VK_SUCCESS != result)
+ 		{
+ 			flags &= ~VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+-			VK_CHECK(s_renderVK->allocateMemory(&mr, flags, &_chunk.deviceMem, true) );
++			result = s_renderVK->allocateMemory(&mr, flags, &_chunk.deviceMem, true);
+ 		}
+ 
++		BGFX_FATAL(VK_SUCCESS == result, Fatal::UnableToInitialize
++			, "Out of memory for a %u-byte uniform buffer: %d.", m_chunkSize, result
++			);
++
+ 		m_chunkSize = bx::narrowCast<uint32_t>(mr.size);
+ 
+ 		VK_CHECK(vkBindBufferMemory(device, _chunk.buffer, _chunk.deviceMem.mem, _chunk.deviceMem.offset) );
+ 
+-		VK_CHECK(vkMapMemory(device, _chunk.deviceMem.mem, _chunk.deviceMem.offset, m_chunkSize, 0, (void**)&_chunk.data) );
++		_chunk.data = NULL;
++		result = vkMapMemory(device, _chunk.deviceMem.mem, _chunk.deviceMem.offset, m_chunkSize, 0, (void**)&_chunk.data);
++		BGFX_FATAL(VK_SUCCESS == result && NULL != _chunk.data, Fatal::UnableToInitialize
++			, "Cannot map a %u-byte uniform buffer: %d.", m_chunkSize, result
++			);
+ 	}
+ 
+ 	void ChunkedScratchBufferVK::destroyChunk(ChunkVK& _chunk)
+@@ -5562,7 +5600,10 @@
+ 		VkMemoryRequirements mr;
+ 		vkGetBufferMemoryRequirements(device, m_buffer, &mr);
+ 
+-		VK_CHECK(s_renderVK->allocateMemory(&mr, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &m_deviceMem, false) );
++		const VkResult memoryResult = s_renderVK->allocateMemory(&mr, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &m_deviceMem, false);
++		BGFX_FATAL(VK_SUCCESS == memoryResult, Fatal::UnableToInitialize
++			, "Out of video and system memory for a %u-byte GPU buffer: %d.", _size, memoryResult
++			);
+ 
+ 		VK_CHECK(vkBindBufferMemory(device, m_buffer, m_deviceMem.mem, m_deviceMem.offset) );
+ 
+@@ -6958,7 +6999,10 @@
+ 				, swizzle ? " (swizzle BGRA8 -> RGBA8)" : ""
+ 				);
+ 
+-			VK_CHECK(createImages(_commandBuffer, _external) );
++			const VkResult imageResult = createImages(_commandBuffer, _external);
++			BGFX_FATAL(VK_SUCCESS == imageResult, Fatal::UnableToCreateTexture
++				, "Out of video memory for a %ux%u texture: %d.", m_width, m_height, imageResult
++				);
+ 
+ 			if (isVideoDecodeDst)
+ 			{
+@@ -11054,6 +11098,11 @@
+ 
+ } /* namespace vk */ } // namespace bgfx
+ 
++extern "C" BGFX_SHARED_LIB_API uint32_t cruma_bgfx_video_memory_fallbacks()
++{
++	return bgfx::vk::s_crumaVideoMemoryFallbacks.load(std::memory_order_relaxed);
++}
++
+ #else
+ 
+ namespace bgfx { namespace vk

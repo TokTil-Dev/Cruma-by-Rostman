@@ -1,0 +1,30 @@
+# PawnAnimData.dat of P152 and later: the sequence a pawn class names for each kind of animation and each social,
+# as numbers of texts in L2GameDataName.dat.
+format  1
+file    PawnAnimData.dat
+title   P152 and later
+
+list uint records {
+    name    class           # the class without its package, such as eyeless
+    list uint anims {
+        uint    key         # the PawnAnimKey as this client numbers it: P152 and 162 give the death 0x3C and
+                            # NpcSocialAnimName 0x5C, 196 0x3E and 0x5F, Essence 0x45 and 0x68
+        uint    index       # the kind of weapon, 0 for an NPC; for a social its number from 0
+        name    anim        # the sequence, such as spatk03
+    }
+    list compact numbers {
+        uint    key
+        uint    index
+        int     value
+    }
+    list compact moreNumbers {
+        uint    key
+        uint    index
+        int     value
+    }
+    list compact floats {
+        uint    key
+        uint    index
+        float   value
+    }
+}

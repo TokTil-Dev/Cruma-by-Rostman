@@ -1,0 +1,8 @@
+title: Server areas
+what-is-an-area
+see-areas
+edit-a-shape
+make-areas
+area-settings
+check-areas
+save-areas

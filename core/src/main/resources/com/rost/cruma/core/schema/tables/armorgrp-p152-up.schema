@@ -1,0 +1,83 @@
+# Armorgrp.dat of P152 and later: how the client draws each armor piece on each figure, and its icon.
+# The texts are numbers of texts in L2GameDataName.dat. The tables of P152, 162, 166 and 196 read so.
+format  1
+file    Armorgrp.dat
+title   P152 and later
+set     backPart 58             # the body part of a cloak, which never changes the hair
+
+# What one figure wears: the body part meshes and their textures, then the additional meshes, such as the
+# wings and skirts of Kamael, with two numbers each, their textures and one more texture.
+struct Look {
+    list byte name meshes
+    list byte name textures
+    byte    addCount
+    list addCount name addMeshes
+    list addCount addValues {
+        byte    first
+        byte    second
+    }
+    list byte name addTextures
+    name    addTexture
+}
+
+list uint records {
+    byte    tag
+    uint    id                  # the item id of the server
+    byte    dropType
+    byte    dropAnimType
+    byte    dropRadius
+    byte    dropHeight
+    list byte drops {
+        name    dropMesh
+        list byte name dropTextures
+    }
+    name    icon                # the icon of the inventory, such as icon.armor_t02_u_i00
+    name    icon2
+    name    icon3
+    name    icon4
+    name    icon5
+    short   durability
+    short   weight
+    byte    material
+    byte    crystallizable
+    list byte ushort quests
+    byte    color
+    byte    attribution
+    short   properties
+    name    iconPanel
+    name    dropSoundType
+    byte    inventoryType
+    byte    bodyPart            # where it is worn. 8 onepiece and 9 alldress cover the legs too
+    Look    mfighter
+    Look    ffighter
+    Look    mdarkelf
+    Look    fdarkelf
+    Look    mdwarf
+    Look    fdwarf
+    Look    melf
+    Look    felf
+    Look    mmagic
+    Look    fmagic
+    Look    morc
+    Look    forc
+    Look    mshaman
+    Look    fshaman
+    Look    mkamael
+    Look    fkamael
+    Look    mertheia
+    Look    fertheia
+    Look    npc
+    name    attackEffect
+    list byte name itemSounds
+    name    dropSound
+    name    equipSound
+    uint    unknown1
+    byte    unknown2
+    byte    armorType
+    byte    crystalType
+    short   mpBonus
+    ushort  hideMask            # the parts of the figure the piece hides. 0x20 hides all the hair
+    byte    underwearBodyPart1
+    byte    underwearBodyPart2
+    byte    enchantEffectType
+}

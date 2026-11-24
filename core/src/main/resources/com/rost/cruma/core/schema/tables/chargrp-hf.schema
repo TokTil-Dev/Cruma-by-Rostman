@@ -1,0 +1,64 @@
+# Chargrp.dat of High Five: how the client builds the figure of each mesh type, such as MFighter: its rows of hair,
+# faces and bodies, then sounds, voices and the class. The table has no count: it holds 17 rows, one for each mesh
+# type from 0, and the last row is empty. Read on High Five 273 and 268. Gracia Final has the same layout with four
+# rows of hair, see chargrp-gf.schema.
+format  1
+file    Chargrp.dat
+title   High Five
+
+# One hair mesh and its texture, or two empty texts.
+struct Hair {
+    string  mesh
+    string  texture
+}
+
+# The meshes of one part of the body and their textures, then lists that the figures Cruma builds do not use.
+struct Body {
+    list uint string meshes         # such as Fighter.MFighter_m001_g
+    list uint string textures       # the textures of the meshes
+    list uint string unknown1       # additional meshes, such as the Kamael's wings, else empty
+    list uint string unknown2       # the textures of those meshes
+    list byte byte unknown3         # numbers with the additional meshes, else empty
+    list byte byte unknown4         # numbers with the additional meshes, else empty
+}
+
+list 17 records {
+    list 5 rows {                   # rows of hair. The first is the hair a player chooses, and a hair accessory
+                                    # picks another by its mesh name, see HairRows
+        list 15 styles {            # one for each hair style, from 0. A style the figure does not have is empty
+            Hair    front           # the hair over the forehead, such as Fighter.MFighter_m000_m00_ah
+            Hair    back            # the hair at the back of the head, such as Fighter.MFighter_m000_m00_bh
+        }
+    }
+    list uint string faces          # the face meshes, such as Fighter.MFighter_m000_f
+    list uint string faceTextures   # the texture of each face
+    list 20 unknownBodies {         # parts of the body that no row names
+        Body    body
+    }
+    Body    gloves                  # the hands, such as Fighter.MFighter_m001_g
+    Body    chest                   # the upper body, such as Fighter.MFighter_m001_u
+    Body    legs                    # the legs, such as Fighter.MFighter_m001_l
+    Body    feet                    # the feet, such as Fighter.MFighter_m001_b
+    list 5 moreBodies {             # parts of the body that no row names
+        Body    body
+    }
+    string  unknown3                # an effect of an attack, such as LineageEffect.p_u002_a
+    uint    unknown4                # 12 in every row that names a class
+    uint    attackSoundCount
+    uint    defenceSoundCount
+    uint    damageSoundCount
+    list attackSoundCount string unknown5   # sounds of an attack, such as ItemSound.fist_1
+    list defenceSoundCount string unknown6  # sounds of a defence
+    list damageSoundCount string unknown7   # sounds of damage
+    list 10 unknown8 {              # voices
+        list uint string unknown9
+    }
+    list uint string unknown10      # more voices
+    uint    unknown11
+    fstring class                   # the pawn class in LineageWarrior.u, such as MFighter, or empty
+    uint    race                    # the race, such as 4 for the Dwarves. The empty row has all bits set here
+    uint    classId                 # a class id
+    uint    sex                     # the sex, 0 for a man and 1 for a woman
+    list uint string unknown12
+    list uint string unknown13
+}

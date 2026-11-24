@@ -1,0 +1,28 @@
+# npcgrp.dat of Chronicle 5: how the client draws each NPC.
+# The texts stand in the rows. It is the table of Interlude without the list of decorations. The table of a
+# Chronicle 5 client reads so.
+format  1
+file    npcgrp.dat
+title   Chronicle 5
+
+list uint records {
+    uint    id                  # the NPC id of npcdata.txt
+    string  class               # the class of the pawn, such as LineageMonster.gremlin
+    string  mesh                # the skeletal mesh, such as LineageMonsters.gremlin_m00
+    list uint string textures   # the textures that replace the materials of the mesh, by slot
+    list uint string secondTextures
+    list compact uint properties
+    float   speed
+    list uint string unknownNames
+    list uint string attackSounds
+    list uint string defenseSounds
+    list uint string damageSounds
+    list compact uint quests
+    string  attackEffect
+    uint    unknown
+    float   soundVolume
+    float   soundRadius
+    float   soundRandom
+    uint    quest               # a quest the NPC belongs to
+    uint    classLimit          # the classes it serves
+}

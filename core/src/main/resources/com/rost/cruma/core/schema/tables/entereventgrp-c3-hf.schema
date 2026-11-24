@@ -1,0 +1,18 @@
+# EnterEventgrp.dat from Chronicle 3 to High Five: how an NPC comes into the world.
+# The texts stand in the rows. The tables of Chronicle 3, Chronicle 4, Chronicle 5, Interlude, Gracia Final and High Five
+# read so.
+format  1
+file    EnterEventgrp.dat
+title   Chronicle 3 to High Five
+
+list uint records {
+    uint    npc         # the NPC id of npcdata.txt
+    fstring tag         # empty in the game's files
+    fstring sound       # a sound of a package, such as SkillSound4.summon_u100_cast
+    float   volume      # out of 255
+    float   radius      # how far the sound is heard
+    uint    rise        # 0, 1 from under the floor, 2 from above
+    uint    spawnType
+    string  effect      # an effect class at the feet
+    string  anim        # the sequence it plays once
+}

@@ -1,0 +1,22 @@
+# ItemName-e.dat of Chronicle 5 and Interlude: the name and the description of each item in the language of
+# the client. The texts stand in the rows. The table of Chronicle 4 with the texts of item sets. The tables of
+# Chronicle 5 and Interlude read so.
+format  1
+file    ItemName-*.dat
+title   Chronicle 5 and Interlude
+
+list uint records {
+    uint    id                  # the item id of the server
+    string  name
+    string  add                 # what follows the name, such as a grade
+    fstring desc                # the description. \n stands for a new line
+    int     popup
+    fstring setIds
+    fstring setDescription
+    fstring setExtraIds
+    fstring setExtraDescription
+    byte    unknown1
+    byte    unknown2
+    uint    setEnchantCount
+    fstring setEnchantDescription
+}

@@ -1,0 +1,19 @@
+# EnterEventgrp.dat of Essence 542: the rows of P152 with ten bytes more between the rise and the effect.
+# The tables of Essence 542 read so, in both worlds.
+format  1
+file    EnterEventgrp.dat
+title   Essence 542 and later
+
+list uint records {
+    uint    npc         # the NPC id of npcdata.txt
+    name    sound       # a sound of a package, such as SkillSound4.summon_shot
+    float   volume      # out of 255
+    float   radius      # how far the sound is heard
+    uint    rise        # 0, 1 from under the floor, 2 from above
+    uint    unknown1    # 0, and 1 in a few rows
+    float   unknown2    # 1, and 0.4 to 1.5 in a few rows
+    byte    unknown3    # 1, and 0 in a few rows
+    byte    unknown4    # 1 in every row
+    name    effect      # an effect class at the feet
+    name    anim        # the sequence it plays once
+}

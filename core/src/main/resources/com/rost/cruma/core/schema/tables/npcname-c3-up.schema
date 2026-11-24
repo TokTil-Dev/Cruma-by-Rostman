@@ -1,0 +1,11 @@
+# NpcName-e.dat of Chronicle 3 and later: the name and the title of each NPC.
+format  1
+file    NpcName-*.dat
+title   Chronicle 3 and later
+
+list uint records {
+    uint    id              # the NPC id of npcdata.txt
+    fstring name
+    fstring title           # the text over the name, or empty
+    uint    titleColor      # the colour of the title, as red, green, blue and alpha bytes
+}

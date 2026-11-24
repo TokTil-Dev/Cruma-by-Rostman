@@ -1,0 +1,10 @@
+# L2GameDataName.dat of P152 and later: the texts that the name fields of the other tables point at by their number.
+# It has no name fields of its own, so it is read before them. Every client from P152 on writes it so: the count, the
+# texts, then the mark.
+format  1
+file    L2GameDataName.dat
+title   P152 and later
+
+list uint records {
+    string  text        # a mesh, a texture, a sequence or another name, such as LineageMonsters.rabbit_m00
+}

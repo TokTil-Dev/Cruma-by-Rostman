@@ -1,0 +1,26 @@
+# AdditionalNpcGrpParts.dat of Essence 542 and later: the items that dress an NPC that looks like a player.
+# The values are item ids of the server, or 0 for none. The rows of P152 with one number more before the hands and
+# five numbers more at the end. The tables of E542 read so, in both worlds.
+format  1
+file    AdditionalNpcGrpParts.dat
+title   Essence 542 and later
+
+list uint records {
+    int     npcId               # the NPC id of npcdata.txt
+    int     class
+    int     chest
+    int     legs
+    int     gloves
+    int     feet
+    int     back
+    int     hairAccessory
+    int     hairStyle           # a number of a hair style, not an item
+    int     unknown1            # a small number, 0 in the main world
+    int     rightHand
+    int     leftHand
+    int     unknown2            # 0 in nearly every row
+    int     unknown3            # 0 to 30
+    int     unknown4            # 0 to 70
+    int     unknown5            # -1 in every row of the main and the Classic world
+    byte    unknown6
+}

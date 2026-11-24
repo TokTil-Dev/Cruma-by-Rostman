@@ -1,0 +1,50 @@
+{
+    "name": "lineage-js",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "typings": "index.d.ts",
+    "scripts": {
+        "start": "node_modules/.bin/webpack serve --config configs/development.config.js --port 8080 --host 0.0.0.0",
+        "build-dev": "rm -rf bin/ && node_modules/.bin/webpack --config configs/development.config.js"
+    },
+    "keywords": [],
+    "author": "Ratchet",
+    "license": "ISC",
+    "devDependencies": {
+        "@babel/core": "^7.17.9",
+        "@babel/plugin-transform-runtime": "^7.17.0",
+        "@babel/plugin-transform-typescript": "^7.16.8",
+        "@babel/preset-env": "^7.16.11",
+        "@babel/preset-typescript": "^7.16.7",
+        "@types/dat.gui": "^0.7.7",
+        "@types/node-forge": "^1.3.0",
+        "@types/pako": "^2.0.0",
+        "@types/three": "~0.143.0",
+        "@types/uuid": "^8.3.4",
+        "babel-loader": "^8.2.4",
+        "buffer": "^6.0.3",
+        "copy-webpack-plugin": "^10.2.4",
+        "css-loader": "^6.7.1",
+        "path-browserify": "^1.0.1",
+        "raw-loader": "^4.0.2",
+        "sass": "^1.85.0",
+        "sass-loader": "^16.0.5",
+        "style-loader": "^3.3.1",
+        "webpack": "^5.72.0",
+        "webpack-bundle-analyzer": "^4.5.0",
+        "webpack-cli": "^4.9.2",
+        "webpack-dev-server": "^4.8.1"
+    },
+    "dependencies": {
+        "@dimforge/rapier3d": "^0.9.0",
+        "@l2js/core": "git+ssh://git@github.com:realratchet/l2js-core.git#stable",
+        "chokidar": "^5.0.0",
+        "dat.gui": "^0.7.9",
+        "gmp-wasm": "^1.1.0",
+        "node-forge": "^1.3.1",
+        "pako": "^2.0.4",
+        "three": "~0.143.0",
+        "uuid": "^8.3.2"
+    }
+}

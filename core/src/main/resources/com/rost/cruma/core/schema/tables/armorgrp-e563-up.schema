@@ -1,0 +1,59 @@
+# Armorgrp.dat of Essence 563 and later: the body part of each armor piece, its icon and its sounds.
+# The texts are numbers of texts in L2GameDataName.dat. The rows of Essence 542 with these changes: one byte stands
+# after inventoryType, the looks of the figures and the hide mask moved to ArmorGrp_Res.dat, whose rows the field res
+# names, and three numbers end the row. The tables of E563 read so, in its three worlds.
+format  1
+file    Armorgrp.dat
+title   Essence 563 and later
+set     backPart 58             # the body part of a cloak, which never changes the hair
+
+list uint records {
+    byte    tag
+    uint    id                  # the item id of the server
+    byte    dropType
+    byte    dropAnimType
+    byte    dropRadius
+    byte    dropHeight
+    list uint drops {
+        name    dropMesh
+        list uint name dropTextures
+        name    dropEffect      # an effect on the item on the ground, or None
+        name    dropEffectPlace # where the effect stands, such as Drop_Socket, or None
+    }
+    name    icon                # the icon of the inventory, such as icon.armor_t02_u_i00
+    name    icon2
+    name    icon3
+    name    icon4
+    name    icon5
+    short   durability
+    short   weight
+    byte    material
+    byte    crystallizable
+    list byte uint quests
+    byte    color
+    byte    attribution
+    name    iconPanel
+    name    dropSoundType
+    byte    inventoryType
+    byte    unknownFlag         # 1 in a quarter of the rows of the Essence world, 0 in the other worlds
+    byte    bodyPart            # where it is worn, as in Essence 542. 8 onepiece and 9 alldress cover the legs too
+    name    attackEffect
+    list byte name itemSounds
+    name    dropSound
+    name    equipSound
+    uint    unknown1            # 1 in every row
+    byte    unknown2
+    byte    armorType
+    byte    crystalType
+    short   mpBonus
+    byte    underwearBodyPart1
+    byte    underwearBodyPart2
+    byte    enchantEffectType
+    byte    normalEnsoulSlots
+    byte    specialEnsoulSlots
+    ushort  res                 # the id of its rows in ArmorGrp_Res.dat, one row for each figure that wears the
+                                # piece. 0 for a piece that no figure draws
+    ushort  unknown3            # 0, and a number in eight rows of the Essence world
+    ushort  unknown4
+    ushort  unknown5
+}

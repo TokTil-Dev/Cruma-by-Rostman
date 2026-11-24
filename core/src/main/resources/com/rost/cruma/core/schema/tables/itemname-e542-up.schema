@@ -1,0 +1,49 @@
+# ItemName-eu.dat of Essence 542 and later: the name and the description of each item in the language of the client.
+# The name is the number of a text in L2GameDataName.dat. The rows of P152 with these changes: the default action is
+# a number in place of a text, the tooltip has four textures, and four numbers end the row. Two lists follow the rows.
+# The tables of E542 read so, in both worlds.
+format  1
+file    ItemName-*.dat
+title   Essence 542 and later
+
+list uint records {
+    uint    id                  # the item id of the server
+    name    name
+    fstring add                 # what follows the name, such as a grade
+    fstring desc                # the description. \n stands for a new line
+    short   popup
+    uint    defaultAction       # a number, where P152 has a text such as action_equip
+    uint    useOrder
+    short   nameClass
+    byte    color
+    name    tooltipTexture
+    name    tooltipTexture2
+    name    tooltipTexture3
+    name    tooltipTexture4
+    byte    tradable
+    byte    droppable
+    byte    destructible
+    byte    privateStore
+    byte    keepType
+    byte    npcTrade
+    byte    commissionStore
+    uint    unknown1
+    compact unknown2            # 0 or 1
+    byte    unknown3
+    uint    unknown4
+}
+
+# The items that the client can use by itself, such as potions and buffs.
+list compact automaticUses {
+    uint    item                # the item id of the server
+    byte    automaticUse        # 1, 2 or 4 in the tables of 542
+}
+
+# One group for most items. The numbers after the item are 0 in every group of the tables of 542.
+list uint itemExtras {
+    uint    item                # the item id of the server
+    byte    unknown1
+    uint    unknown2
+    byte    unknown3
+    byte    unknown4
+}

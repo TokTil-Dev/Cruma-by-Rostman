@@ -1,0 +1,70 @@
+# Weapongrp.dat of Chronicle 3: how the client draws each weapon, and its icon.
+# The table of Chronicle 4 with less in it: one drop mesh and one drop texture, four empty texts before the
+# icon and none after it, and fifteen numbers in place of eighteen.
+# The tables of Chronicle 3 read so.
+format  1
+file    Weapongrp.dat
+title   Chronicle 3
+
+list uint records {
+    uint    tag
+    uint    id                  # the item id of the server
+    uint    dropType
+    uint    dropAnimType
+    uint    dropRadius
+    uint    dropHeight
+    uint    unknown1
+    string  dropMesh
+    string  dropTexture
+    string  emptyText1
+    string  emptyText2
+    string  emptyText3
+    string  emptyText4
+    string  icon                # the icon of the inventory, such as icon.weapon_small_sword_i00
+    int     durability
+    uint    weight
+    uint    material
+    uint    crystallizable
+    uint    properties
+    uint    bodyPart
+    uint    handness            # 0 shield, 1 one-handed, 2 two-handed, 3 dual, 4 pole, 5 bow
+    uint    meshCount
+    list meshCount string meshes   # two for a dual weapon
+    list uint string textures   # the textures of the meshes
+    list uint string itemSounds
+    string  dropSound
+    string  equipSound
+    string  effect
+    uint    stat1
+    uint    stat2
+    uint    stat3
+    uint    stat4
+    uint    stat5
+    uint    stat6
+    uint    stat7
+    uint    stat8
+    uint    stat9
+    uint    stat10
+    uint    stat11
+    uint    stat12
+    uint    stat13
+    uint    stat14
+    uint    stat15
+    list meshCount string meshEffects
+    list meshCount meshEffectValues {
+        float   value1
+        float   value2
+        float   value3
+        float   value4
+        float   value5
+    }
+    list meshCount string meshRanges
+    list meshCount meshRangeValues {
+        float   value1
+        float   value2
+        float   value3
+        float   value4
+        float   value5
+        float   value6
+    }
+}

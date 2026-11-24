@@ -1,0 +1,25 @@
+# SystemMsg-e.dat with one number more before the window, as the reader before the schemas expected of the last
+# clients. No client Cruma knows has this form.
+format  1
+file    SystemMsg-*.dat
+title   One number more before the window
+
+list uint records {
+    uint    id              # the MsgNo of a cut scene
+    uint    unknown
+    fstring message         # the line
+    uint    group
+    uint    color           # red, green, blue and alpha bytes
+    int     sound           # the number of a text in L2GameDataName.dat
+    int     voice           # the number of a text in L2GameDataName.dat
+    uint    extra
+    uint    window
+    uint    font
+    uint    lifeTime
+    uint    background
+    uint    animation
+    fstring screenMessage
+    fstring gfxScreenMessage
+    fstring gfxScreenParameter
+    fstring type
+}

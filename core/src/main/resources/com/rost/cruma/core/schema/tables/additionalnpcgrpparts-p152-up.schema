@@ -1,0 +1,19 @@
+# AdditionalNpcGrpParts.dat of P152 and later: the items that dress an NPC that looks like a player.
+# The values are item ids of the server, or 0 for none. The tables of P152, 162, 166 and 196 read so.
+format  1
+file    AdditionalNpcGrpParts.dat
+title   P152 and later
+
+list uint records {
+    int     npcId               # the NPC id of npcdata.txt
+    int     class
+    int     chest
+    int     legs
+    int     gloves
+    int     feet
+    int     back
+    int     hairAccessory
+    int     hairStyle           # a number of a hair style, not an item
+    int     rightHand
+    int     leftHand
+}

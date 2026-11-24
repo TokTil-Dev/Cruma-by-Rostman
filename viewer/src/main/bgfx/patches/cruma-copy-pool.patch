@@ -1,0 +1,346 @@
+diff --git a/src/bgfx.cpp b/src/bgfx.cpp
+--- a/src/bgfx.cpp
++++ b/src/bgfx.cpp
+@@ -6,9 +6,11 @@
+ #include <bx/platform.h>
+ 
+ #include "bgfx_p.h"
++#include <bgfx/c99/bgfx.h>
+ #include <bgfx/embedded_shader.h>
+ #include <bx/file.h>
+ #include <bx/mutex.h>
++#include <atomic>
+ 
+ #include "topology.h"
+ 
+@@ -463,6 +465,33 @@
+ 	const InternalData* getInternalData()
+ 	{
+ 		return &g_internalData;
++	}
++
++	static std::atomic<bool> s_crumaTraceFrame { false };
++	static std::atomic<bool> s_crumaCopyPoolEnabled { false };
++	static void crumaDrainCopyPool();
++
++	extern "C" BGFX_SHARED_LIB_API void cruma_bgfx_set_copy_pool(uint32_t _enabled)
++	{
++		BGFX_CHECK_API_THREAD();
++		s_crumaCopyPoolEnabled.store(0 != _enabled, std::memory_order_relaxed);
++	}
++
++	extern "C" BGFX_SHARED_LIB_API void cruma_bgfx_set_frame_trace(uint32_t _enabled)
++	{
++		BGFX_CHECK_API_THREAD();
++		s_crumaTraceFrame.store(0 != _enabled, std::memory_order_relaxed);
++	}
++
++	extern "C" BGFX_SHARED_LIB_API bool cruma_bgfx_frame_trace_enabled()
++	{
++		return s_crumaTraceFrame.load(std::memory_order_relaxed);
++	}
++
++	extern "C" BGFX_SHARED_LIB_API uint32_t cruma_bgfx_api_frame_number()
++	{
++		BGFX_CHECK_API_THREAD();
++		return s_ctx->m_submit->m_frameNum;
+ 	}
+ 
+ 	uintptr_t overrideInternal(TextureHandle _handle, uintptr_t _ptr, uint16_t _layerIndex)
+@@ -2771,6 +2800,8 @@
+ 
+ 	uint32_t Context::frame(uint8_t _flags)
+ 	{
++		const bool trace = cruma_bgfx_frame_trace_enabled();
++		const int64_t traceBegin = trace ? bx::getHPCounter() : 0;
+ 		m_encoder[0].end(true);
+ 
+ #if BGFX_CONFIG_MULTITHREADED
+@@ -2800,10 +2831,29 @@
+ 
+ 		BGFX_PROFILER_SCOPE("bgfx/API thread frame", kColorSubmit);
+ 		// wait for render thread to finish
++		const int64_t tracePrepared = trace ? bx::getHPCounter() : 0;
+ 		renderSemWait();
++		const int64_t traceWaited = trace ? bx::getHPCounter() : 0;
+ 		frameNoRenderWait();
++		const int64_t traceSwapped = trace ? bx::getHPCounter() : 0;
+ 
+ 		m_encoder[0].begin(m_submit, 0);
++		if (trace)
++		{
++			const int64_t traceFinished = bx::getHPCounter();
++			const double milliseconds = 1000.0 / double(bx::getHPFrequency() );
++			if ((traceFinished - traceBegin) * milliseconds > 5.0)
++			{
++				bx::debugPrintf("[cruma-native-frame] frame=%u prepareMs=%.6f renderWaitMs=%.6f swapMs=%.6f encoderBeginMs=%.6f totalMs=%.6f\n"
++					, frameNum
++					, (tracePrepared - traceBegin) * milliseconds
++					, (traceWaited - tracePrepared) * milliseconds
++					, (traceSwapped - traceWaited) * milliseconds
++					, (traceFinished - traceSwapped) * milliseconds
++					, (traceFinished - traceBegin) * milliseconds
++					);
++			}
++		}
+ 
+ 		return frameNum;
+ 	}
+@@ -2923,6 +2973,8 @@
+ 		NSAutoreleasePoolScope pool;
+ #endif // BX_PLATFORM_OSX || BX_PLATFORM_IOS || BX_PLATFORM_VISIONOS
+ 
++		const bool trace = cruma_bgfx_frame_trace_enabled();
++		const int64_t traceBegin = trace ? bx::getHPCounter() : 0;
+ 		if (!m_flipAfterRender)
+ 		{
+ 			if (!m_flushPrevFrame)
+@@ -2932,13 +2984,17 @@
+ 			}
+ 		}
+ 
++		const int64_t traceFlipped = trace ? bx::getHPCounter() : 0;
+ 		if (apiSemWait(_msecs) )
+ 		{
++			const int64_t traceWaited = trace ? bx::getHPCounter() : 0;
++			const uint32_t traceFrame = m_render->m_frameNum;
+ 			{
+ 				BGFX_PROFILER_SCOPE("bgfx/Exec commands pre", kColorResource);
+ 				rendererExecCommands(m_render->m_cmdPre);
+ 			}
+ 
++			const int64_t tracePre = trace ? bx::getHPCounter() : 0;
+ 			if (m_rendererInitialized)
+ 			{
+ 				{
+@@ -2957,11 +3013,23 @@
+ 				}
+ 			}
+ 
++			const int64_t traceSubmit = trace ? bx::getHPCounter() : 0;
+ 			{
+ 				BGFX_PROFILER_SCOPE("bgfx/Exec commands post", kColorResource);
+ 				rendererExecCommands(m_render->m_cmdPost);
+ 			}
+ 
++			if (trace)
++			{
++				const int64_t tracePost = bx::getHPCounter();
++				const double ms = 1000.0 / double(bx::getHPFrequency() );
++				if ((tracePost - traceWaited + traceFlipped - traceBegin) * ms > 16.0)
++				{
++					bx::debugPrintf("[cruma-native-render] frame=%u previousFlipMs=%.6f apiWaitMs=%.6f preMs=%.6f submitMs=%.6f postMs=%.6f\n"
++						, traceFrame, (traceFlipped - traceBegin) * ms, (traceWaited - traceFlipped) * ms
++						, (tracePre - traceWaited) * ms, (traceSubmit - tracePre) * ms, (tracePost - traceSubmit) * ms);
++				}
++			}
+ 			renderSemPost();
+ 
+ 			if (m_flipAfterRender)
+@@ -4216,6 +4284,7 @@
+ 		BGFX_CHECK_API_THREAD();
+ 		Context* ctx = s_ctx; // it's going to be NULLd inside shutdown.
+ 		ctx->shutdown();
++		crumaDrainCopyPool();
+ 		BX_ASSERT(NULL == s_ctx, "bgfx is should be uninitialized here.");
+ 
+ 		bx::deleteObject(g_allocator, ctx, Context::kAlignment);
+@@ -4736,20 +4805,160 @@
+ 		return mem;
+ 	}
+ 
+-	const Memory* copy(const void* _data, uint32_t _size)
+-	{
+-		BX_ASSERT(0 < _size, "Invalid memory operation. _size is 0.");
+-		const Memory* mem = alloc(_size);
+-		bx::memCopy(mem->data, _data, _size);
+-		return mem;
+-	}
+-
+ 	struct MemoryRef
+ 	{
+ 		Memory mem;
+ 		ReleaseFn releaseFn;
+ 		void* userData;
+ 	};
++
++	struct CrumaCopyBlock
++	{
++		MemoryRef ref;
++		CrumaCopyBlock* next;
++		uint32_t bin;
++		uint32_t capacity;
++	};
++	static bx::Mutex s_crumaCopyPoolMutex;
++	static CrumaCopyBlock* s_crumaCopyBins[16] = {};
++	static uint32_t s_crumaCopyBinCounts[16] = {};
++	static uint64_t s_crumaCopyBinHits[16] = {};
++	static uint64_t s_crumaCopyBinMisses[16] = {};
++	static uint64_t s_crumaCopyCachedBytes = 0;
++	static uint64_t s_crumaCopyHits = 0;
++	static uint64_t s_crumaCopyMisses = 0;
++	static uint64_t s_crumaCopyInUse = 0;
++
++	extern "C" BGFX_SHARED_LIB_API uint64_t cruma_bgfx_copy_pool_stat(uint32_t _stat)
++	{
++		BGFX_MUTEX_SCOPE(s_crumaCopyPoolMutex);
++		switch (_stat)
++		{
++		case 0: return s_crumaCopyCachedBytes;
++		case 1: return s_crumaCopyHits;
++		case 2: return s_crumaCopyMisses;
++		case 3: return s_crumaCopyInUse;
++		default: return 0;
++		}
++	}
++
++	static void crumaReleaseCopyBlock(void*, void* _userData)
++	{
++		CrumaCopyBlock* block = static_cast<CrumaCopyBlock*>(_userData);
++		{
++			BGFX_MUTEX_SCOPE(s_crumaCopyPoolMutex);
++			BX_ASSERT(s_crumaCopyInUse > 0, "Released an unowned upload block");
++			--s_crumaCopyInUse;
++			if (s_crumaCopyPoolEnabled.load(std::memory_order_relaxed)
++			&&  s_crumaCopyBinCounts[block->bin] < bx::max<uint32_t>(8, 1024 * 1024 / block->capacity))
++			{
++				block->next = s_crumaCopyBins[block->bin];
++				s_crumaCopyBins[block->bin] = block;
++				++s_crumaCopyBinCounts[block->bin];
++				s_crumaCopyCachedBytes += block->capacity;
++				return;
++			}
++		}
++		bx::free(g_allocator, block);
++	}
++
++	static const Memory* crumaAllocCopy(uint32_t _size)
++	{
++		uint32_t bin = 0;
++		uint32_t capacity = 64;
++		while (capacity < _size)
++		{
++			++bin;
++			capacity *= 2;
++		}
++		CrumaCopyBlock* block;
++		{
++			BGFX_MUTEX_SCOPE(s_crumaCopyPoolMutex);
++			block = s_crumaCopyBins[bin];
++			++s_crumaCopyInUse;
++			if (NULL != block)
++			{
++				s_crumaCopyBins[bin] = block->next;
++				--s_crumaCopyBinCounts[bin];
++				s_crumaCopyCachedBytes -= capacity;
++				++s_crumaCopyHits;
++				++s_crumaCopyBinHits[bin];
++			}
++			else
++			{
++				++s_crumaCopyMisses;
++				++s_crumaCopyBinMisses[bin];
++			}
++		}
++		if (NULL == block)
++		{
++			block = static_cast<CrumaCopyBlock*>(bx::alloc(g_allocator, sizeof(CrumaCopyBlock) + capacity) );
++			block->bin = bin;
++			block->capacity = capacity;
++		}
++		block->ref.mem.size = _size;
++		block->ref.mem.data = reinterpret_cast<uint8_t*>(block + 1);
++		block->ref.releaseFn = crumaReleaseCopyBlock;
++		block->ref.userData = block;
++		return &block->ref.mem;
++	}
++
++	static void crumaDrainCopyPool()
++	{
++		s_crumaCopyPoolEnabled.store(false, std::memory_order_relaxed);
++		BGFX_MUTEX_SCOPE(s_crumaCopyPoolMutex);
++		BX_ASSERT(0 == s_crumaCopyInUse, "Upload blocks still owned after renderer shutdown");
++		for (uint32_t bin = 0; bin < BX_COUNTOF(s_crumaCopyBins); ++bin)
++		{
++			CrumaCopyBlock* block = s_crumaCopyBins[bin];
++			while (NULL != block)
++			{
++				CrumaCopyBlock* next = block->next;
++				bx::free(g_allocator, block);
++				block = next;
++			}
++			s_crumaCopyBins[bin] = NULL;
++			s_crumaCopyBinCounts[bin] = 0;
++		}
++		const uint64_t retiredBytes = s_crumaCopyCachedBytes;
++		s_crumaCopyCachedBytes = 0;
++		if (cruma_bgfx_frame_trace_enabled() )
++		{
++			bx::debugPrintf("[cruma-copy-pool] hits=%llu misses=%llu retiredBytes=%llu cachedBytes=%llu inUse=%llu\n"
++				, (unsigned long long)s_crumaCopyHits, (unsigned long long)s_crumaCopyMisses
++				, (unsigned long long)retiredBytes, (unsigned long long)s_crumaCopyCachedBytes
++				, (unsigned long long)s_crumaCopyInUse);
++			for (uint32_t bin = 0; bin < BX_COUNTOF(s_crumaCopyBins); ++bin)
++			{
++				bx::debugPrintf("[cruma-copy-pool-bin] capacity=%u hits=%llu misses=%llu\n", 64u << bin
++					, (unsigned long long)s_crumaCopyBinHits[bin], (unsigned long long)s_crumaCopyBinMisses[bin]);
++			}
++		}
++	}
++
++	const Memory* copy(const void* _data, uint32_t _size)
++	{
++		BX_ASSERT(0 < _size, "Invalid memory operation. _size is 0.");
++		const bool trace = cruma_bgfx_frame_trace_enabled();
++		const int64_t traceBegin = trace ? bx::getHPCounter() : 0;
++		const Memory* mem = _size <= 2 * 1024 * 1024
++			&& s_crumaCopyPoolEnabled.load(std::memory_order_relaxed)
++			? crumaAllocCopy(_size) : alloc(_size);
++		const int64_t traceAllocated = trace ? bx::getHPCounter() : 0;
++		bx::memCopy(mem->data, _data, _size);
++		if (trace)
++		{
++			const int64_t traceCopied = bx::getHPCounter();
++			const double ms = 1000.0 / double(bx::getHPFrequency() );
++			if ((traceCopied - traceBegin) * ms > 5.0)
++			{
++				bx::debugPrintf("[cruma-native-copy] bytes=%u allocateMs=%.6f copyMs=%.6f totalMs=%.6f\n"
++					, _size, (traceAllocated - traceBegin) * ms, (traceCopied - traceAllocated) * ms
++					, (traceCopied - traceBegin) * ms);
++			}
++		}
++		return mem;
++	}
+ 
+ 	const Memory* makeRef(const void* _data, uint32_t _size, ReleaseFn _releaseFn, void* _userData)
+ 	{
+@@ -4773,6 +4982,11 @@
+ 		if (isMemoryRef(mem) )
+ 		{
+ 			MemoryRef* memRef = reinterpret_cast<MemoryRef*>(mem);
++			if (crumaReleaseCopyBlock == memRef->releaseFn)
++			{
++				crumaReleaseCopyBlock(mem->data, memRef->userData);
++				return;
++			}
+ 			if (NULL != memRef->releaseFn)
+ 			{
+ 				memRef->releaseFn(mem->data, memRef->userData);
+diff --git a/src/renderer.h b/src/renderer.h
+--- a/src/renderer.h
++++ b/src/renderer.h
+@@ -649,9 +649,11 @@
+ 			ChunkTy sbc;
+ 			static_cast<Derived*>(this)->createChunk(sbc);
+ 
+-			const uint32_t lastChunk = bx::max(uint32_t(m_chunks.size()-1), 1);
+-			const uint32_t at = UINT32_MAX == _at ? lastChunk : _at;
+-			const uint32_t chunkIndex = at % bx::max(m_chunks.size(), 1);
++			const uint32_t numChunks  = uint32_t(m_chunks.size() );
++			const uint32_t chunkIndex = UINT32_MAX == _at
++				? numChunks
++				: bx::min(_at, numChunks)
++				;
+ 
+ 			m_chunkControl.resize(m_chunkSize);
+ 

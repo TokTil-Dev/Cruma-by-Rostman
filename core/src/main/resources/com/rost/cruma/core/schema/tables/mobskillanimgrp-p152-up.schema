@@ -1,0 +1,11 @@
+# MobSkillAnimgrp.dat of P152 and later: the sequence an NPC plays for a skill, as the number of a text in
+# L2GameDataName.dat.
+format  1
+file    MobSkillAnimgrp.dat
+title   P152 and later
+
+list uint records {
+    uint    npc             # the NPC id of npcdata.txt
+    uint    skill           # the skill id
+    name    anim            # the sequence, such as spatk01
+}

@@ -1,0 +1,76 @@
+# Weapongrp.dat of Chronicle 4 and 5: how the client draws each weapon, and its icon.
+# The texts stand in the rows. The effects, their numbers and the ranges at the end of a row come once for
+# each mesh. The tables of Chronicle 4 and Chronicle 5 read so.
+format  1
+file    Weapongrp.dat
+title   Chronicle 4 and 5
+
+list uint records {
+    uint    tag
+    uint    id                  # the item id of the server
+    uint    dropType
+    uint    dropAnimType
+    uint    dropRadius
+    uint    dropHeight
+    uint    unknown1
+    string  dropMesh1
+    string  dropMesh2
+    string  dropMesh3
+    string  dropTexture1
+    string  dropTexture2
+    string  dropTexture3
+    string  icon                # the icon of the inventory, such as icon.weapon_small_sword_i00
+    string  icon2
+    string  icon3
+    string  icon4
+    string  icon5
+    int     durability
+    uint    weight
+    uint    material
+    uint    crystallizable
+    uint    properties
+    uint    bodyPart
+    uint    handness            # 0 shield, 1 one-handed, 2 two-handed, 3 dual, 4 pole, 5 bow
+    uint    meshCount
+    list meshCount string meshes   # two for a dual weapon
+    list uint string textures   # the textures of the meshes
+    list uint string itemSounds
+    string  dropSound
+    string  equipSound
+    string  effect
+    uint    randomDamage
+    uint    pAttack
+    uint    mAttack
+    uint    weaponType
+    uint    crystalType
+    uint    critical
+    int     hitModify
+    int     avoidModify
+    uint    shieldDefense
+    uint    shieldRate
+    uint    speed
+    uint    mpConsume
+    uint    soulshotCount
+    uint    spiritshotCount
+    uint    curvature
+    uint    unknown2
+    int     canEquipHero
+    uint    unknown3
+    list meshCount string meshEffects
+    list meshCount meshEffectValues {
+        float   value1
+        float   value2
+        float   value3
+        float   value4
+        float   value5
+    }
+    list meshCount string meshRanges
+    list meshCount meshRangeValues {
+        float   value1
+        float   value2
+        float   value3
+        float   value4
+        float   value5
+        float   value6
+    }
+}

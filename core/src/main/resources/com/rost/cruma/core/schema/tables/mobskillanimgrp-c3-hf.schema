@@ -1,0 +1,14 @@
+# MobSkillAnimgrp.dat of Chronicle 3 to High Five: the sequence an NPC plays for a skill, with the names of the
+# skill, the NPC and its class after it.
+format  1
+file    MobSkillAnimgrp.dat
+title   Chronicle 3 to High Five
+
+list uint records {
+    uint    npc             # the NPC id of npcdata.txt
+    uint    skill           # the skill id
+    string  anim            # the sequence, such as spatk01
+    fstring skillName
+    fstring npcName
+    fstring npcClass
+}

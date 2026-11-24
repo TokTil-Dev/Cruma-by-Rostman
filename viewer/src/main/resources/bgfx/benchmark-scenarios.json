@@ -1,0 +1,543 @@
+{
+  "schema": "cruma.viewer.bgfx-scenarios/v1",
+  "scenarios": [
+    {
+      "id": "GEODATA_FAR_VIEW", "display": [1440, 1000],
+      "camera": [78000, 141000, -1200, 40, -18],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 45000, "static_mesh_culling_distance": 45000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000, "custom_lighting": false
+    },
+    {
+      "id": "GEODATA_GIRAN_STEPS", "display": [1440, 1000],
+      "camera": [82960, 148140, -3120, 315, -45],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 45000, "static_mesh_culling_distance": 45000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000, "custom_lighting": false
+    },
+    {
+      "id": "GEODATA_CRUMA_UNDERGROUND", "display": [1440, 1000],
+      "camera": [17720, 113944, -11544, 90, -28],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 45000, "static_mesh_culling_distance": 45000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000, "custom_lighting": false
+    },
+    {
+      "id": "GEODATA_CRUMA_UPPER_FLOOR", "display": [1440, 1000],
+      "camera": [17720, 119560, -8904, 270, -28],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 45000, "static_mesh_culling_distance": 45000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000, "custom_lighting": false
+    },
+    {
+      "id": "GEODATA_GIRAN_REGION_SEAM", "display": [1440, 1000],
+      "camera": [65536, 148792, -3080, 270, -55],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 45000, "static_mesh_culling_distance": 45000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000, "custom_lighting": false
+    },
+    {
+      "id": "SOUTHWEST_SCREENSHOT_33K", "display": [1440, 968],
+      "camera": [-133690, 275682, 33345, 311.9, -23],
+      "simulation_time_seconds": 120.0, "simulation_time_step_seconds": 0.016666667,
+      "time_of_day": 13.0,
+      "view_distance": 2000000, "static_mesh_culling_distance": 160000,
+      "static_mesh_distance_culling": false,
+      "bloom": false, "particle_distance": 160000,
+      "water_back_tex": false, "water_shader": false, "water_effect_type": 0
+    },
+    {
+      "id": "SOUTHWEST_OVERVIEW_33K", "display": [1440, 968],
+      "camera": [-133690, 275682, 33345, 330, -25],
+      "simulation_time_seconds": 120.0, "simulation_time_step_seconds": 0.016666667,
+      "time_of_day": 13.0,
+      "view_distance": 2000000, "static_mesh_culling_distance": 160000,
+      "static_mesh_distance_culling": false,
+      "bloom": false, "particle_distance": 160000,
+      "water_back_tex": false, "water_shader": false, "water_effect_type": 0
+    },
+    {
+      "id": "SOUTHWEST_OVERVIEW_33K_TRAVERSAL", "display": [1440, 968],
+      "camera": [-133690, 275682, 33345, 330, -25],
+      "camera_path": [
+        [-133690, 275682, 33345, 330, -25, 240],
+        [-118690, 275682, 33345, 350, -25, 240],
+        [-118690, 260682, 33345, 330, -30, 240],
+        [-133690, 260682, 33345, 310, -25, 240]
+      ],
+      "simulation_time_seconds": 120.0, "simulation_time_step_seconds": 0.016666667,
+      "time_of_day": 13.0,
+      "view_distance": 2000000, "static_mesh_culling_distance": 160000,
+      "static_mesh_distance_culling": false,
+      "bloom": false, "particle_distance": 160000,
+      "water_back_tex": false, "water_shader": false, "water_effect_type": 0
+    },
+    {
+      "id": "CITY_EYE", "display": [1440, 1000],
+      "camera": [83336, 147972, -3004, 270, -12],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000
+    },
+    {
+      "id": "CITY_WALL", "display": [1440, 1000],
+      "camera": [83336, 147850, -3004, 270, -80],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000
+    },
+    {
+      "id": "GIRAN_CLIENT_LIGHTING", "display": [1440, 1000],
+      "camera": [83206, 148407, -2770, 270, -48],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": false
+    },
+    {
+      "id": "GIRAN_CLIENT_LIGHTING_POLE", "display": [1440, 1000],
+      "camera": [82188, 148102, -2965, 274, -28],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": false
+    },
+    {
+      "id": "GIRAN_STATIC_MESH_SIGN", "display": [1440, 1000],
+      "camera": [82424, 146661, -3074, 0, 0],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": false
+    },
+    {
+      "id": "GIRAN_EXTERIOR_ARMOR_SIGN", "display": [1440, 1000],
+      "camera": [80423, 150601, -3366, 173.6, -3.4],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": false
+    },
+    {
+      "id": "RUNE_CLIFF_CLIENT_LIGHTING", "display": [1440, 1000],
+      "camera": [73064, -81599, 3270, 8.7, -38.1],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 90000, "static_mesh_culling_distance": 90000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": false
+    },
+    {
+      "id": "CRUMA_CLIENT_LIGHTING", "display": [1440, 1000],
+      "camera": [12129, 114123, -3301, 98.6, 44.0],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 90000, "static_mesh_culling_distance": 90000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": false
+    },
+    {
+      "id": "FORT_GEOMETRY", "display": [1440, 1000],
+      "camera": [64290, 138308, -337, 180, -20],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000
+    },
+    {
+      "id": "HF_AUTHORED_PROJECTOR_20_17", "display": [1440, 1000],
+      "camera": [19658, -12847, 6200, 270, -78],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": false
+    },
+    {
+      "id": "HF_AUTHORED_PROJECTOR_16_10", "display": [1440, 1000],
+      "camera": [-114541, -250900, 6000, 270, -78],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": false
+    },
+    {
+      "id": "HF_AUTHORED_PROJECTOR_20_24", "display": [1440, 1000],
+      "camera": [16333, 214700, -8500, 270, -5],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": false
+    },
+    {
+      "id": "GLUDIO_STATIC_MESH_LOD_NEAR", "display": [1440, 1000],
+      "camera": [-10013, 125428, -158, 225, -28],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000
+    },
+    {
+      "id": "GIRAN_BIRD_13K", "display": [1440, 1000],
+      "camera": [75513, 157248, 13003, 270, -30],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 200000, "static_mesh_culling_distance": 200000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000
+    },
+    {
+      "id": "WORLD_200K", "display": [1440, 1000],
+      "camera": [83336, 147972, 80000, 270, -70],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 200000, "static_mesh_culling_distance": 200000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000
+    },
+    {
+      "id": "WORLD_MAX", "display": [1440, 1000],
+      "camera": [83336, 147972, 140000, 270, -78],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 506900, "static_mesh_culling_distance": 310000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000
+    },
+    {
+      "id": "WORLD_OVERVIEW", "display": [1440, 1000],
+      "camera": [-91535, 448193, 321968, 303, -42],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 2000000, "static_mesh_culling_distance": 160000,
+      "static_mesh_distance_culling": false,
+      "bloom": false, "particle_distance": 160000
+    },
+    {
+      "id": "WORLD_OVERVIEW_LOW", "display": [1440, 1000],
+      "camera": [-254202, 285696, 119219, 330, -23],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 2000000, "static_mesh_culling_distance": 160000,
+      "static_mesh_distance_culling": false,
+      "bloom": false, "particle_distance": 160000
+    },
+    {
+      "id": "WORLD_OVERVIEW_37K", "display": [1440, 1000],
+      "camera": [85559, 158497, 37287, 270, -25],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 2000000, "static_mesh_culling_distance": 160000,
+      "static_mesh_distance_culling": false,
+      "bloom": false, "particle_distance": 160000
+    },
+    {
+      "id": "WORLD_OVERVIEW_22K", "display": [1440, 1000],
+      "camera": [83682, 158995, 21837, 270, -25],
+      "simulation_time_seconds": 120.0, "simulation_time_step_seconds": 0.016666667,
+      "time_of_day": 13.0,
+      "view_distance": 2000000, "static_mesh_culling_distance": 160000,
+      "static_mesh_distance_culling": false,
+      "bloom": false, "particle_distance": 160000,
+      "water_back_tex": false, "water_shader": false, "water_effect_type": 1
+    },
+    {
+      "id": "WORLD_OVERVIEW_22K_TRAVERSAL", "display": [1440, 1000],
+      "camera": [83682, 158995, 21837, 270, -25],
+      "camera_path": [
+        [83682, 158995, 21837, 270, -25, 180],
+        [103000, 164000, 23500, 280, -25, 180],
+        [96000, 184000, 25000, 300, -27, 180],
+        [72000, 178000, 23500, 250, -26, 180],
+        [83682, 158995, 21837, 270, -25, 180]
+      ],
+      "simulation_time_seconds": 120.0, "simulation_time_step_seconds": 0.016666667,
+      "time_of_day": 13.0,
+      "view_distance": 2000000, "static_mesh_culling_distance": 160000,
+      "static_mesh_distance_culling": false,
+      "bloom": false, "particle_distance": 160000,
+      "water_back_tex": false, "water_shader": false, "water_effect_type": 1
+    },
+    {
+      "id": "WORLD_OVERVIEW_37K_TRAVERSAL", "display": [1440, 1000],
+      "camera": [85559, 158497, 37287, 270, -25],
+      "camera_path": [
+        [85559, 158497, 37287, 270, -25, 180],
+        [125000, 165000, 40000, 280, -25, 180],
+        [105000, 205000, 45000, 300, -28, 180],
+        [65000, 195000, 42000, 250, -26, 180]
+      ],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 2000000, "static_mesh_culling_distance": 160000,
+      "static_mesh_distance_culling": false,
+      "bloom": false, "particle_distance": 160000
+    },
+    {
+      "id": "WORLD_MAX_FILL_BOUND", "display": [2560, 1440],
+      "camera": [83336, 147972, 140000, 270, -78],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 506900, "static_mesh_culling_distance": 310000,
+      "static_mesh_distance_culling": true,
+      "bloom": true, "particle_distance": 160000
+    },
+    {
+      "id": "GIRAN_WATER", "display": [1440, 1000],
+      "camera": [47938, 186864, -3080, 220, -8],
+      "simulation_time_seconds": 120.0, "time_of_day": 18.0,
+      "view_distance": 90000, "static_mesh_culling_distance": 90000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "water_back_tex": true, "water_shader": true, "water_effect_type": 2
+    },
+    {
+      "id": "GIRAN_WATER_SHADOW_STACK", "display": [1440, 1000],
+      "camera": [83183, 153503, -3112, 270, -12],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 90000, "static_mesh_culling_distance": 90000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "water_back_tex": true, "water_shader": true, "water_effect_type": 2,
+      "custom_lighting": true,
+      "custom_sun_shadows": true,
+      "custom_local_light_shadows": true
+    },
+    {
+      "id": "DRAGON_VALLEY", "display": [1440, 1000],
+      "camera": [122824, 110836, -3327, 40, -10],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 100000, "static_mesh_culling_distance": 100000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000
+    },
+    {
+      "id": "HARDWARE_RAY_SUN_COURTYARD", "display": [1440, 1000],
+      "camera": [80651, 147190, -2241, 270, -72],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": true,
+      "custom_sun_shadows": true,
+      "custom_local_light_shadows": false,
+      "custom_ray_traced_sun_reference": true
+    },
+    {
+      "id": "HARDWARE_RAY_SUN_COURTYARD_TRAVERSAL", "display": [1440, 1000],
+      "camera": [80651, 147190, -2241, 270, -72],
+      "camera_path": [
+        [80651, 147190, -2241, 270, -72, 1],
+        [81051, 147190, -2241, 315, -72, 120]
+      ],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": true,
+      "custom_sun_shadows": true,
+      "custom_local_light_shadows": false,
+      "custom_ray_traced_sun_reference": true
+    },
+    {
+      "id": "SUN_CASCADE_COURTYARD_YAW_270", "display": [1440, 1000],
+      "camera": [80651, 147190, -2241, 270, -72],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": true,
+      "custom_sun_shadows": true,
+      "custom_local_light_shadows": false
+    },
+    {
+      "id": "SUN_CASCADE_COURTYARD_YAW_225", "display": [1440, 1000],
+      "camera": [80651, 147190, -2241, 225, -72],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": true,
+      "custom_sun_shadows": true,
+      "custom_local_light_shadows": false
+    },
+    {
+      "id": "SUN_CASCADE_GIRAN_FAR", "display": [1440, 1000],
+      "camera": [79474, 146376, 210000, 270, -72],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 400000, "static_mesh_culling_distance": 400000,
+      "static_mesh_distance_culling": false,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": true,
+      "custom_sun_shadows": true,
+      "custom_local_light_shadows": false
+    },
+    {
+      "id": "SUN_CASCADE_GIRAN_FAR_RETURN", "display": [1440, 1000],
+      "camera": [79474, 146376, 210000, 270, -72],
+      "camera_path": [
+        [79474, 146376, 210000, 270, -72, 1],
+        [79474, 146376, -1902, 270, -72, 120]
+      ],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 400000, "static_mesh_culling_distance": 400000,
+      "static_mesh_distance_culling": false,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": true,
+      "custom_sun_shadows": true,
+      "custom_local_light_shadows": false
+    },
+    {
+      "id": "SUN_CASCADE_GIRAN_PLAZA_RETURN", "display": [1440, 1000],
+      "camera": [82949, 149807, 210000, 270, -72],
+      "camera_path": [
+        [82949, 149807, 210000, 270, -72, 1],
+        [82949, 149807, -1846, 270, -72, 120]
+      ],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 400000, "static_mesh_culling_distance": 400000,
+      "static_mesh_distance_culling": false,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": true,
+      "custom_sun_shadows": true,
+      "custom_local_light_shadows": false
+    },
+    {
+      "id": "SHADOW_STACK_COURTYARD_YAW_270", "display": [1440, 1000],
+      "camera": [80651, 147190, -2241, 270, -72],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": true,
+      "custom_sun_shadows": true,
+      "custom_local_light_shadows": true,
+      "custom_ray_traced_sun_reference": true
+    },
+    {
+      "id": "SHADOW_STACK_COURTYARD_YAW_225", "display": [1440, 1000],
+      "camera": [80651, 147190, -2241, 225, -72],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": true,
+      "custom_sun_shadows": true,
+      "custom_local_light_shadows": true,
+      "custom_ray_traced_sun_reference": true
+    },
+    {
+      "id": "CRUMA_FX", "display": [1440, 1000],
+      "camera": [17724, 113950, -11272, 90, -5],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 70000, "static_mesh_culling_distance": 70000,
+      "static_mesh_distance_culling": true,
+      "bloom": true, "particle_distance": 160000
+    },
+    {
+      "id": "NIGHT_SKY", "display": [1440, 1000],
+      "camera": [83336, 147972, 12000, 270, 18],
+      "simulation_time_seconds": 120.0, "time_of_day": 1.0,
+      "view_distance": 100000, "static_mesh_culling_distance": 100000,
+      "static_mesh_distance_culling": true,
+      "bloom": true, "particle_distance": 160000
+    },
+    {
+      "id": "INTERIOR", "display": [1440, 1000],
+      "camera": [17724, 119684, -8664, 180, -3],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 50000, "static_mesh_culling_distance": 50000,
+      "static_mesh_distance_culling": true,
+      "bloom": true, "particle_distance": 160000
+    },
+    {
+      "id": "SEVEN_SIGNS_CLIENT_LIGHTING", "display": [1440, 1000],
+      "camera": [47217, 172640, -4759, 90, -5],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 50000, "static_mesh_culling_distance": 50000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000,
+      "custom_lighting": false
+    },
+    {
+      "id": "HF_STATIC_MESH_LOD_TRANSITION", "display": [1440, 1000],
+      "camera": [10026, -12504, 1797, 0, -44],
+      "camera_path": [
+        [10026, -12504, 1797, 0, -44, 60],
+        [5930, -12504, 1797, 0, -26, 60]
+      ],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 30000, "static_mesh_culling_distance": 30000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 0
+    },
+    {
+      "id": "ORTHO_TILE", "display": [1024, 1024],
+      "camera": [8192, 8192, 10000, 270, -89],
+      "simulation_time_seconds": 0.0, "time_of_day": 12.0,
+      "view_distance": 506900, "static_mesh_culling_distance": 506900,
+      "static_mesh_distance_culling": false,
+      "bloom": false, "particle_distance": 0
+    },
+    {
+      "id": "RESIZE_HIDPI", "display": [1440, 1000],
+      "camera": [83336, 147972, -3004, 270, -12],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 60000, "static_mesh_culling_distance": 60000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000
+    },
+    {
+      "id": "FSR1_1440P", "display": [2560, 1440],
+      "camera": [83336, 147972, 80000, 270, -70],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 200000, "static_mesh_culling_distance": 200000,
+      "static_mesh_distance_culling": true,
+      "bloom": true, "particle_distance": 160000
+    },
+    {
+      "id": "FSR1_4K", "display": [3840, 2160],
+      "camera": [83336, 147972, 80000, 270, -70],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 200000, "static_mesh_culling_distance": 200000,
+      "static_mesh_distance_culling": true,
+      "bloom": true, "particle_distance": 160000
+    },
+    {
+      "id": "COLD_CACHE_TRAVERSAL", "display": [1440, 1000],
+      "camera": [83336, 147972, 2000, 270, -20],
+      "camera_path": [
+        [83336, 147972, 2000, 270, -20, 160],
+        [47938, 186864, 2000, 220, -25, 160],
+        [122824, 110836, 3000, 40, -25, 160],
+        [17724, 113950, -10000, 90, -5, 160],
+        [147450, 28081, 4000, 180, -30, 160],
+        [83336, 147972, 2000, 270, -20, 200]
+      ],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 100000, "static_mesh_culling_distance": 100000,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 160000
+    },
+    {
+      "id": "WORLD_OVERVIEW_TRAVERSAL", "display": [1440, 1000],
+      "camera": [-254202, 285696, 119219, 330, -23],
+      "camera_path": [
+        [-254202, 285696, 119219, 330, -23, 180],
+        [-215000, 300000, 100000, 325, -24, 180],
+        [-175000, 320000, 80000, 320, -26, 180],
+        [-225000, 270000, 90000, 335, -24, 180],
+        [-254202, 285696, 119219, 330, -23, 180]
+      ],
+      "simulation_time_seconds": 120.0, "time_of_day": 13.0,
+      "view_distance": 506900, "static_mesh_culling_distance": 506900,
+      "static_mesh_distance_culling": true,
+      "bloom": false, "particle_distance": 0
+    }
+  ]
+}

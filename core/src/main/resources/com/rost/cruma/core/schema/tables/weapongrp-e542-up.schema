@@ -1,0 +1,93 @@
+# Weapongrp.dat of Essence 542 and later: how the client draws each weapon, and its icon.
+# The texts are numbers of texts in L2GameDataName.dat. The rows of P152 with these changes: the counts of the drops
+# and of their textures are 4 bytes, each drop has an effect and its place, a quest is 4 bytes, and the short after
+# attribution is gone. The tables of E542 read so, in both worlds.
+format  1
+file    Weapongrp.dat
+title   Essence 542 and later
+
+list uint records {
+    byte    tag
+    uint    id                  # the item id of the server
+    byte    dropType
+    byte    dropAnimType
+    byte    dropRadius
+    byte    dropHeight
+    list uint drops {
+        name    dropMesh
+        list uint name dropTextures
+        name    dropEffect      # an effect on the item on the ground, such as LineageEffect2.devil_wp_shooter_b, or None
+        name    dropEffectPlace # where the effect stands, such as Drop_Socket, or None
+    }
+    name    icon                # the icon of the inventory, such as icon.weapon_small_sword_i00
+    name    icon2
+    name    icon3
+    name    icon4
+    name    icon5
+    short   durability
+    short   weight
+    byte    material
+    byte    crystallizable
+    list byte uint quests
+    byte    color
+    byte    attribution
+    name    iconPanel
+    name    dropSoundType
+    byte    inventoryType
+    byte    bodyPart            # from 59 on one more than in P152 and 196
+    byte    handness            # as in P152, and 18, 19 and 20 for one-handed weapons that 196 gives 1: magic
+                                # swords, magic blunts and blunts. 15 orbs and 17 pistols in the Classic worlds
+    byte    meshCount
+    list meshCount name meshes  # two for a dual weapon
+    list meshCount byte meshValues
+    list byte name textures     # the textures of the meshes
+    list byte name itemSounds
+    name    dropSound
+    name    equipSound
+    name    effect
+    byte    randomDamage
+    byte    weaponType
+    byte    crystalType
+    byte    mpConsume
+    byte    soulshotCount
+    byte    spiritshotCount
+    short   curvature
+    byte    unknown
+    byte    canEquipHero
+    byte    magicWeapon
+    float   ertheiaFistScale
+    short   junk
+    list byte enchants {
+        name    enchantEffect
+        float   effectOffsetX
+        float   effectOffsetY
+        float   effectOffsetZ
+        float   meshOffsetX
+        float   meshOffsetY
+        float   meshOffsetZ
+        float   meshScaleX
+        float   meshScaleY
+        float   meshScaleZ
+        float   effectVelocity
+        float   particleScale
+        float   effectScale
+        float   particleOffsetX
+        float   particleOffsetY
+        float   particleOffsetZ
+        float   ringOffsetX
+        float   ringOffsetY
+        float   ringOffsetZ
+        float   ringScaleX
+        float   ringScaleY
+        float   ringScaleZ
+    }
+    byte    variationEffect1
+    byte    variationEffect2
+    byte    variationEffect3
+    byte    variationEffect4
+    byte    variationEffect5
+    byte    variationEffect6
+    list byte name variationIcons
+    byte    normalEnsoulSlots
+    byte    specialEnsoulSlots
+}

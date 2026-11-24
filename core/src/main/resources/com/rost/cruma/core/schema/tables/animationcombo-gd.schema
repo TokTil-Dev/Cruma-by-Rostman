@@ -1,0 +1,12 @@
+# AnimationCombo.dat of the first clients that had it, before P152: the name stands in the row.
+format  1
+file    AnimationCombo.dat
+title   Goddess of Destruction
+
+list uint records {
+    string  name            # the animation, such as E
+    fstring first           # the kinds of the pawn's animation it plays in order, such as CastMid
+    fstring second
+    fstring third
+    int     loop            # the part that repeats until the cast ends, from 0, or -1 for none
+}

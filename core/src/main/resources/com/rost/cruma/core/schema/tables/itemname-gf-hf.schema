@@ -1,0 +1,31 @@
+# ItemName-e.dat of Gracia Final and High Five: the name and the description of each item in the language of
+# the client. The texts stand in the rows. The tables of Gracia Final and High Five read so.
+format  1
+file    ItemName-*.dat
+title   Gracia Final and High Five
+
+list uint records {
+    uint    id                  # the item id of the server
+    string  name
+    string  add                 # what follows the name, such as a grade
+    fstring desc                # the description. \n stands for a new line
+    int     popup
+    uint    setCount
+    list uint string setIds
+    fstring setDescription
+    uint    setExtraCount
+    list uint string setExtraIds
+    fstring setExtraDescription
+    byte    unknown1
+    byte    unknown2
+    byte    unknown3
+    byte    unknown4
+    byte    unknown5
+    byte    unknown6
+    byte    unknown7
+    byte    unknown8
+    byte    unknown9
+    uint    specialEnchantAmount
+    fstring specialEnchantDescription
+    uint    color
+}

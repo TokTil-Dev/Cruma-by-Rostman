@@ -1,0 +1,16 @@
+# EnterEventgrp.dat of P152 and later: the texts are numbers of texts in L2GameDataName.dat.
+# The tables of P152, 162, 166 and 196 read so.
+format  1
+file    EnterEventgrp.dat
+title   P152 and later
+
+list uint records {
+    uint    npc         # the NPC id of npcdata.txt
+    name    sound       # a sound of a package, such as SkillSound4.summon_u100_cast
+    float   volume      # out of 255
+    float   radius      # how far the sound is heard
+    uint    rise        # 0, 1 from under the floor, 2 from above
+    uint    spawnType
+    name    effect      # an effect class at the feet
+    name    anim        # the sequence it plays once
+}

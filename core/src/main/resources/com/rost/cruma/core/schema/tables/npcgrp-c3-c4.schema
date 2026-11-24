@@ -1,0 +1,31 @@
+# npcgrp.dat of Chronicle 4: how the client draws each NPC.
+# The texts stand in the rows. It is the table of Interlude without the list of decorations, with a flag
+# before the quests and two numbers after them. The tables of Chronicle 3 and Chronicle 4 read so.
+format  1
+file    npcgrp.dat
+title   Chronicle 3 and 4
+
+list uint records {
+    uint    id                  # the NPC id of npcdata.txt
+    string  class               # the class of the pawn, such as LineageMonster.gremlin
+    string  mesh                # the skeletal mesh, such as LineageMonsters.gremlin_m00
+    list uint string textures   # the textures that replace the materials of the mesh, by slot
+    list uint string secondTextures
+    list compact uint properties
+    float   speed
+    list uint string unknownNames
+    list uint string attackSounds
+    list uint string defenseSounds
+    list uint string damageSounds
+    uint    flag                # 1 for some townsfolk
+    list compact uint quests
+    uint    levelLow            # often the same as levelHigh
+    uint    levelHigh
+    string  attackEffect
+    uint    unknown
+    float   soundVolume
+    float   soundRadius
+    float   soundRandom
+    uint    quest               # a quest the NPC belongs to
+    uint    classLimit          # the classes it serves
+}

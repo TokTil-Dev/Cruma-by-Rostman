@@ -1,0 +1,11 @@
+lucide.ttf
+font/lucide.ttf of the lucide-static 1.59.0 npm package:
+https://registry.npmjs.org/lucide-static/-/lucide-static-1.59.0.tgz
+SHA256 of the package 39e2f835692c193233ac7bcdf34eb0cc2da0f839fd9f3674c34d2751bccf37f0
+SHA256 of lucide.ttf 387dd5a1c10fc24701551f1f19d9384f4b871a799d78284d46f6bdc4205a54bd
+
+LICENSE.txt
+The LICENSE file of the same package: ISC, with MIT for the icons that come from Feather.
+
+HudWidgets.Glyph names its Lucide icon, such as "map-pin"; font/codepoints.json of the package
+gives each name its code point.

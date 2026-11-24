@@ -1,0 +1,20 @@
+# Lineage2JS compatibility-reference attribution
+
+Cruma's `core/env/TimeEnvColor.java` identifies the TypeScript color and environment helpers as a
+reference/port. Preserve attribution to **Ratchet and Lineage2JS contributors** for those portions;
+Cruma's MIT license does not replace upstream rights.
+
+Upstream: https://github.com/realratchet/Lineage2JS
+Reviewed commit: `56cf7011cbf614ccb8880f828539d349b9f6b8b1`.
+
+The exact upstream `package.json` is reproduced alongside this notice. It names `Ratchet` as author and
+declares `ISC`. No separate LICENSE file was present at that revision. `LICENSE.txt` supplies the standard
+ISC permission text with contributor attribution; it is not presented as a copied upstream license file.
+The manifest and reference source hashes were checked against the public repository at that commit.
+
+Reference files (not bundled here):
+- `src/utils/color-byte.ts`: SHA-256 `8e70b57ab607f0535d9204855659c814a6f95cd0c2dc4e4bf8b27fed9bfe5ce1`
+- `src/rendering/l2-env.ts`: SHA-256 `7090ce4246301257c7ba3f89a2b1b2ab96a033e2bb09f4fc68ea7fe0f5d9d2a9`
+
+This attribution is for independently distributed software, not a grant of rights to client content or
+proof that every upstream input has been legally cleared. See `docs/CLIENT_CONTENT.md` for that boundary.

@@ -1,0 +1,25 @@
+# CharCreategrp.dat of Essence 542 and later: the classes a player can make in a world, where each stands on the
+# screen that makes a character, what it wears there and the sequences it plays. The tables of E542 read so, in both
+# worlds, and the Essence world takes the Classic table.
+format  1
+file    CharCreategrp.dat
+title   Essence 542 and later
+
+list uint records {
+    uint    slot            # the place of the class, such as 4 for the human Death Knight and 39 for the Crow
+    float   x               # where it stands on the screen that makes a character
+    float   y
+    float   z
+    uint    unknown1        # an item of the server or 0: the first of the four pieces of a set or a one-piece armor
+    uint    unknown2        # an item or 0
+    uint    unknown3        # an item or 0
+    uint    unknown4        # an item or 0
+    uint    unknown5        # an item or 0, a weapon in most rows
+    uint    unknown6        # an item or 0
+    uint    unknown7        # 0, or an item in a few rows
+    uint    unknown8        # 0, or a number in a few rows, such as 34697 with the rabbit of the Shine Maker
+    name    intro           # the sequence it plays when it is chosen, such as Social_Intro_MFighter_DK
+    name    introWait       # the sequence it waits in after it
+    name    unknown9        # None, or a second intro in a few rows, such as Social_Intro_Rabbit
+    name    unknown10       # None, or the wait after that intro
+}

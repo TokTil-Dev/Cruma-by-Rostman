@@ -1,0 +1,24 @@
+# SystemMsg-e.dat of 196: the form of P152 with one text more, the parameter of the text on the screen.
+format  1
+file    SystemMsg-*.dat
+title   196
+
+list uint records {
+    uint    id              # the MsgNo of a cut scene
+    uint    unknown
+    fstring message         # the line
+    uint    group
+    uint    color           # red, green, blue and alpha bytes
+    int     sound           # the number of a text in L2GameDataName.dat
+    int     voice           # the number of a text in L2GameDataName.dat
+    uint    window
+    uint    font
+    uint    lifeTime
+    uint    background
+    uint    animation
+    fstring screenMessage
+    fstring screenParameter
+    fstring gfxScreenMessage
+    fstring gfxScreenParameter
+    fstring type
+}

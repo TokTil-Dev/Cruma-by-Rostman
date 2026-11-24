@@ -1,0 +1,10 @@
+title: Effects and skills
+what-are-effects
+skill-casts
+play-an-effect
+play-a-skill
+edit-an-effect
+edit-a-skill
+view-a-script
+export-effects
+effects-mode

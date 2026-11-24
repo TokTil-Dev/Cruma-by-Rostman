@@ -1,0 +1,318 @@
+diff --git a/src/renderer_d3d12.cpp b/src/renderer_d3d12.cpp
+--- a/src/renderer_d3d12.cpp
++++ b/src/renderer_d3d12.cpp
+@@ -5025,6 +5025,10 @@
+ 	{
+ 		m_externalQueue = NULL != _queue;
+ 
++		m_stagingDevice = _device;
++		m_stagingPage   = { NULL, NULL };
++		m_stagingOffset = 0;
++
+ 		if (NULL != _queue)
+ 		{
+ 			m_commandQueue  = _queue;
+@@ -5100,6 +5104,22 @@
+ 	{
+ 		finish(UINT64_MAX, true);
+ 
++		retireStagingPage();
++		for (uint32_t ii = 0; ii < kMaxCommandLists; ++ii)
++		{
++			StagingPageArray& retired = m_stagingRetired[ii];
++			for (StagingPageArray::iterator it = retired.begin(), itEnd = retired.end(); it != itEnd; ++it)
++			{
++				DX_RELEASE(it->m_ptr, 0);
++			}
++			retired.clear();
++		}
++		for (StagingPageArray::iterator it = m_stagingFree.begin(), itEnd = m_stagingFree.end(); it != itEnd; ++it)
++		{
++			DX_RELEASE(it->m_ptr, 0);
++		}
++		m_stagingFree.clear();
++
+ 		DX_RELEASE(m_fence, 0);
+ 
+ 		for (uint32_t ii = 0; ii < kMaxCommandLists; ++ii)
+@@ -5146,6 +5166,8 @@
+ 		const uint32_t currentIdx = m_control.m_current;
+ 		CommandList& commandList = m_commandList[currentIdx];
+ 
++		retireStagingPage();
++
+ 		for (TextureHandle th : m_external)
+ 		{
+ 			s_renderD3D12->m_textures[th.idx].setState(commandList.m_commandList, D3D12_RESOURCE_STATE_COMMON);
+@@ -5219,6 +5241,69 @@
+ 		m_release[m_control.m_current].push_back(_ptr);
+ 	}
+ 
++	bool CommandQueueD3D12::allocStaging(uint64_t _size, uint32_t _align, ID3D12Resource*& _resource, uint64_t& _offset, uint8_t*& _data)
++	{
++		if (_size > kStagingPageSize)
++		{
++			return false;
++		}
++
++		uint32_t offset = bx::alignUp(m_stagingOffset, _align);
++
++		if (NULL == m_stagingPage.m_ptr
++		||  offset + _size > kStagingPageSize)
++		{
++			retireStagingPage();
++
++			if (!m_stagingFree.empty() )
++			{
++				m_stagingPage = m_stagingFree.back();
++				m_stagingFree.pop_back();
++			}
++			else
++			{
++				StagingPage page;
++				page.m_ptr  = createCommittedResource(m_stagingDevice, HeapProperty::Upload, kStagingPageSize);
++				page.m_data = NULL;
++
++				if (NULL != page.m_ptr)
++				{
++					const D3D12_RANGE readRange = { 0, 0 };
++					DX_CHECK(page.m_ptr->Map(0, &readRange, (void**)&page.m_data) );
++				}
++
++				if (NULL == page.m_data)
++				{
++					DX_RELEASE(page.m_ptr, 0);
++					return false;
++				}
++
++				setDebugObjectName(page.m_ptr, "Staging Page");
++				m_stagingPage = page;
++			}
++
++			offset = 0;
++		}
++
++		_resource = m_stagingPage.m_ptr;
++		_offset   = offset;
++		_data     = m_stagingPage.m_data + offset;
++		m_stagingOffset = offset + uint32_t(_size);
++
++		return true;
++	}
++
++	void CommandQueueD3D12::retireStagingPage()
++	{
++		if (NULL != m_stagingPage.m_ptr)
++		{
++			m_stagingRetired[m_control.m_current].push_back(m_stagingPage);
++			m_stagingPage = { NULL, NULL };
++		}
++
++		m_stagingOffset = 0;
++	}
++
+ 	bool CommandQueueD3D12::consume(uint32_t _ms)
+ 	{
+ 		CommandList& commandList = m_commandList[m_control.m_read];
+@@ -5241,6 +5326,20 @@
+ 			}
+ 			ra.clear();
+ 
++			StagingPageArray& retired = m_stagingRetired[m_control.m_read];
++			for (StagingPageArray::iterator it = retired.begin(), itEnd = retired.end(); it != itEnd; ++it)
++			{
++				if (m_stagingFree.size() < kStagingMaxFreePages)
++				{
++					m_stagingFree.push_back(*it);
++				}
++				else
++				{
++					DX_RELEASE(it->m_ptr, 0);
++				}
++			}
++			retired.clear();
++
+ 			m_pipelineStatsSum.add(m_pipelineStats[m_control.m_read]);
+ 
+ 			m_control.consume(1);
+@@ -5898,20 +5997,35 @@
+ 
+ 	void BufferD3D12::update(ID3D12GraphicsCommandList* _commandList, uint32_t _offset, uint32_t _size, void* _data, bool /*_discard*/)
+ 	{
+-		ID3D12Resource* staging = createCommittedResource(s_renderD3D12->m_device, HeapProperty::Upload, _size);
++		ID3D12Resource* staging;
++		uint64_t stagingOffset;
+ 		uint8_t* data;
++		const bool pooled = s_renderD3D12->m_cmd.allocStaging(_size, 16, staging, stagingOffset, data);
+ 
+-		D3D12_RANGE readRange = { 0, 0 };
+-		DX_CHECK(staging->Map(0, &readRange, (void**)&data) );
+-		bx::memCopy(data, _data, _size);
+-		D3D12_RANGE writeRange = { 0, _size };
+-		staging->Unmap(0, &writeRange);
++		if (pooled)
++		{
++			bx::memCopy(data, _data, _size);
++		}
++		else
++		{
++			staging       = createCommittedResource(s_renderD3D12->m_device, HeapProperty::Upload, _size);
++			stagingOffset = 0;
++
++			D3D12_RANGE readRange = { 0, 0 };
++			DX_CHECK(staging->Map(0, &readRange, (void**)&data) );
++			bx::memCopy(data, _data, _size);
++			D3D12_RANGE writeRange = { 0, _size };
++			staging->Unmap(0, &writeRange);
++		}
+ 
+ 		D3D12_RESOURCE_STATES state = setState(_commandList, D3D12_RESOURCE_STATE_COPY_DEST);
+-		_commandList->CopyBufferRegion(m_ptr, _offset, staging, 0, _size);
++		_commandList->CopyBufferRegion(m_ptr, _offset, staging, stagingOffset, _size);
+ 		setState(_commandList, state);
+ 
+-		s_renderD3D12->m_cmd.release(staging);
++		if (!pooled)
++		{
++			s_renderD3D12->m_cmd.release(staging);
++		}
+ 	}
+ 
+ 	void BufferD3D12::destroy()
+@@ -6664,14 +6778,29 @@
+ 				uint64_t uploadBufferSize;
+ 				device->GetCopyableFootprints(&resourceDesc, 0, numSrd, 0, NULL, NULL, NULL, &uploadBufferSize);
+ 
+-				ID3D12Resource* staging = createCommittedResource(s_renderD3D12->m_device, HeapProperty::Upload, uint32_t(uploadBufferSize) );
++				ID3D12Resource* staging;
++				uint64_t stagingOffset;
++				uint8_t* stagingData;
++				const bool pooled = s_renderD3D12->m_cmd.allocStaging(
++					  uploadBufferSize
++					, D3D12_TEXTURE_DATA_PLACEMENT_ALIGNMENT
++					, staging
++					, stagingOffset
++					, stagingData
++					);
++
++				if (!pooled)
++				{
++					staging       = createCommittedResource(s_renderD3D12->m_device, HeapProperty::Upload, uint32_t(uploadBufferSize) );
++					stagingOffset = 0;
++				}
+ 
+ 				setState(commandList, D3D12_RESOURCE_STATE_COPY_DEST);
+ 
+ 				uint64_t result = updateSubresources(commandList
+ 					, m_ptr
+ 					, staging
+-					, 0
++					, stagingOffset
+ 					, 0
+ 					, numSrd
+ 					, srd
+@@ -6681,7 +6810,10 @@
+ 
+ 				setState(commandList, state);
+ 
+-				s_renderD3D12->m_cmd.release(staging);
++				if (!pooled)
++				{
++					s_renderD3D12->m_cmd.release(staging);
++				}
+ 			}
+ 			else if (0 == _external)
+ 			{
+@@ -7016,11 +7148,28 @@
+ 
+ 		const uint32_t rowPitch = layout.Footprint.RowPitch;
+ 
+-		ID3D12Resource* staging = createCommittedResource(s_renderD3D12->m_device, HeapProperty::Upload, totalBytes);
++		ID3D12Resource* staging;
++		uint64_t stagingOffset;
+ 		uint8_t* dstData;
++		const bool pooled = s_renderD3D12->m_cmd.allocStaging(
++			  totalBytes
++			, D3D12_TEXTURE_DATA_PLACEMENT_ALIGNMENT
++			, staging
++			, stagingOffset
++			, dstData
++			);
+ 
+-		D3D12_RANGE readRange = { 0, 0 };
+-		DX_CHECK(staging->Map(0, &readRange, (void**)&dstData) );
++		if (pooled)
++		{
++			layout.Offset = stagingOffset;
++		}
++		else
++		{
++			staging = createCommittedResource(s_renderD3D12->m_device, HeapProperty::Upload, totalBytes);
++
++			D3D12_RANGE readRange = { 0, 0 };
++			DX_CHECK(staging->Map(0, &readRange, (void**)&dstData) );
++		}
+ 
+ 		const uint32_t dstSlicePitch = rowPitch  * numRows;
+ 		const uint32_t srcSlicePitch = copyPitch * numRows;
+@@ -7036,8 +7185,11 @@
+ 			bx::free(g_allocator, temp);
+ 		}
+ 
+-		D3D12_RANGE writeRange = { 0, size_t(totalBytes) };
+-		staging->Unmap(0, &writeRange);
++		if (!pooled)
++		{
++			D3D12_RANGE writeRange = { 0, size_t(totalBytes) };
++			staging->Unmap(0, &writeRange);
++		}
+ 
+ 		D3D12_TEXTURE_COPY_LOCATION dst = { m_ptr,   D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX, {        } };
+ 		dst.SubresourceIndex = subres;
+@@ -7046,7 +7198,10 @@
+ 
+ 		setState(_commandList, state);
+ 
+-		s_renderD3D12->m_cmd.release(staging);
++		if (!pooled)
++		{
++			s_renderD3D12->m_cmd.release(staging);
++		}
+ 	}
+ 
+ 	void TextureD3D12::resolve(ID3D12GraphicsCommandList* _commandList, uint8_t _resolve, uint32_t _layer, uint32_t _numLayers, uint32_t _mip)
+diff --git a/src/renderer_d3d12.h b/src/renderer_d3d12.h
+--- a/src/renderer_d3d12.h
++++ b/src/renderer_d3d12.h
+@@ -543,6 +543,18 @@
+ 		void release(ID3D12Resource* _ptr);
+ 		bool consume(uint32_t _ms = UINT32_MAX);
+ 
++		static constexpr uint32_t kStagingPageSize     = 4<<20;
++		static constexpr uint32_t kStagingMaxFreePages = 16;
++
++		struct StagingPage
++		{
++			ID3D12Resource* m_ptr;
++			uint8_t* m_data;
++		};
++
++		bool allocStaging(uint64_t _size, uint32_t _align, ID3D12Resource*& _resource, uint64_t& _offset, uint8_t*& _data);
++		void retireStagingPage();
++
+ 		void addExternal(TextureHandle _handle);
+ 		void removeExternal(TextureHandle _handle);
+ 
+@@ -598,6 +610,12 @@
+ 		CommandList m_commandList[kMaxCommandLists];
+ 		typedef stl::vector<ID3D12Resource*> ResourceArray;
+ 		ResourceArray m_release[kMaxCommandLists];
++		typedef stl::vector<StagingPage> StagingPageArray;
++		StagingPageArray m_stagingRetired[kMaxCommandLists];
++		StagingPageArray m_stagingFree;
++		StagingPage m_stagingPage;
++		uint32_t m_stagingOffset;
++		ID3D12Device* m_stagingDevice;
+ 		typedef stl::vector<TextureHandle> ExternalTextureArray;
+ 		ExternalTextureArray m_external;
+ 		bx::RingBufferControl m_control;

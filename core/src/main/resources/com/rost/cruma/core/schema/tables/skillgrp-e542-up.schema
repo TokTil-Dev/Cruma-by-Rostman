@@ -1,0 +1,76 @@
+# Skillgrp.dat of Essence 542: the id is a uint and the level a ushort, a skill names a list of effects, each row
+# ends with more numbers, and after the list of macros comes a list of other panel icons.
+# A field with a name of 196 has the value of that field of 196 in nearly every row both tables have.
+# The tables of Essence 542 read so, in both worlds.
+format  1
+file    Skillgrp.dat
+title   Essence 542 and later
+
+list uint records {
+    uint    id
+    ushort  level
+    ushort  subLevel
+    ushort  unknown1        # 0 to 26: the operateType of 196 in 4 of 5 rows
+    byte    unknown2        # 0, and 1 in 90 rows
+    byte    resistCast
+    byte    magicType
+    short   mpConsume
+    int     range           # how far from its target the caster casts it, -1 on the caster itself
+    byte    style           # cast_style: 0 plays the effects at once, with no cast
+    float   hit             # the hit time in seconds
+    float   coolTime
+    float   reuseDelay
+    int     effectPoint
+    byte    kind            # 0 physical, 1 magic, 2 static, 3 a dance or a song
+    uint    originSkill
+    byte    isDouble
+    list uint name anims    # the animations; the client plays one of them at random
+    byte    effectCount     # how many effect classes follow: 0 to 3 in the game's files
+    if effectCount == 1 {
+        name    effect      # its effect class, the first when it has more
+    } else {
+        if effectCount == 2 {
+            name    effect
+            name    secondEffect
+        } else {
+            if effectCount == 3 {
+                name    effect
+                name    secondEffect
+                name    thirdEffect
+            } else {
+                list effectCount name otherEffects  # none, or 4 and more, which no table of the game has
+            }
+        }
+    }
+    name    icon            # the texture of its icon
+    name    iconPanel
+    byte    debuff
+    byte    iconType
+    byte    enchantSkillLevel
+    name    enchantIcon
+    ushort  hpConsume
+    byte    rumbleSelf
+    byte    rumbleTarget
+    byte    unknown3        # 0, and 1 in a few hundred rows
+    ushort  unknown4        # 0 in every row
+    ushort  unknown5        # 0 in every row
+    uint    unknown6        # 0 to a few thousand, such as 5, 10 and 1800
+    byte    unknown7
+    byte    unknown8
+    byte    unknown9
+    byte    unknown10       # 0 in every row
+    byte    unknown11       # 0 in every row
+    byte    unknown12       # 0 in every row
+}
+
+list compact macros {
+    uint    skill           # the skill id
+    byte    automaticUse    # 1 to 3 in the game's files
+}
+
+list compact panelIcons {
+    uint    skill           # the skill id
+    ushort  skillLevel
+    ushort  skillSubLevel
+    name    iconPanel
+}

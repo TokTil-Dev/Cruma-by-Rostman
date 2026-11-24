@@ -1,0 +1,54 @@
+# npcgrp.dat of Grand Crusade and later: how the client draws each NPC.
+# The texts are numbers of texts in L2GameDataName.dat. The rows also keep the scale, the speeds and the
+# items in the hands. The tables of P152, 162, 166 and 196 read so.
+format  1
+file    npcgrp.dat
+title   Grand Crusade and later
+
+list uint records {
+    ushort  id                  # the NPC id of npcdata.txt
+    name    class               # the class of the pawn, such as LineageMonster.gremlin
+    name    mesh                # the skeletal mesh, such as LineageMonsters.gremlin_m00
+    list compact name textures  # the textures that replace the materials of the mesh, by slot
+    list uint name secondTextures
+    list compact ushort properties
+    float   speed
+    list compact name attackSounds
+    list compact name defenseSounds
+    list compact name damageSounds
+    list compact decorations {
+        name   decoration
+        float  scale
+    }
+    list compact quests {
+        ushort quest
+        byte   step
+    }
+    name    attackEffect
+    byte    soundVolume
+    byte    soundRadius
+    byte    soundRandom
+    byte    social
+    byte    hpShowable
+    list uint name dialogSounds
+    byte    silhouette
+    byte    summonSort
+    byte    summonMaxCount
+    byte    summonGrade
+    float   drawScale           # the scale the client draws the NPC at. 0 means 1
+    float   zoomCamera
+    name    icon
+    byte    soundPriority
+    ushort  runSpeed            # in units a second, as ground_high of the server's npcdata.txt
+    ushort  walkSpeed           # as ground_low
+    float   collisionRadius
+    float   collisionRadius2
+    float   collisionHeight
+    float   collisionHeight2
+    int     rightHand           # the item in its right hand, or 0
+    int     leftHand            # the item in its left hand, or 0
+    int     chest
+    double  hp
+    double  mp
+    short   npcType
+}

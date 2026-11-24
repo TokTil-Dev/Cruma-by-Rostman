@@ -1,0 +1,63 @@
+# Armorgrp.dat of Chronicle 3: how the client draws each armor piece on each figure, and its icon.
+# The table of Chronicle 4 with less in it: one drop mesh and one drop texture, four empty texts before the
+# icon and none after it, no additional meshes of a figure, and a shorter end. The body parts are numbered
+# as Interlude numbers them. The tables of Chronicle 3 read so.
+format  1
+file    Armorgrp.dat
+title   Chronicle 3
+set     bodyParts 1             # the body parts are numbered as Interlude numbers them
+
+# What one figure wears: the body part meshes and their textures.
+struct Look {
+    list uint string meshes
+    list uint string textures
+}
+
+list uint records {
+    uint    tag
+    uint    id                  # the item id of the server
+    uint    dropType
+    uint    dropAnimType
+    uint    dropRadius
+    uint    dropHeight
+    uint    unknown1
+    string  dropMesh
+    string  dropTexture
+    string  emptyText1
+    string  emptyText2
+    string  emptyText3
+    string  emptyText4
+    string  icon                # the icon of the inventory, such as icon.armor_t02_u_i00
+    int     durability
+    uint    weight
+    uint    material
+    uint    crystallizable
+    uint    properties
+    uint    bodyPart            # where it is worn
+    Look    mfighter
+    Look    ffighter
+    Look    mdarkelf
+    Look    fdarkelf
+    Look    mdwarf
+    Look    fdwarf
+    Look    melf
+    Look    felf
+    Look    mmagic
+    Look    fmagic
+    Look    morc
+    Look    forc
+    Look    mshaman
+    Look    fshaman
+    Look    otherLook1          # meshes and textures that no figure of Interlude wears
+    Look    otherLook2
+    string  attackEffect
+    list uint string itemSounds
+    string  dropSound
+    string  equipSound
+    uint    unknown2
+    uint    unknown3
+    uint    unknown4
+    uint    unknown5
+    uint    unknown6
+    uint    unknown7
+}

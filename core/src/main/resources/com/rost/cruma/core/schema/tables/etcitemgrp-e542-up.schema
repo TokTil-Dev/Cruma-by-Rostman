@@ -1,0 +1,46 @@
+# EtcItemgrp.dat of Essence 542 and later: the items that are neither weapons nor armor, and their icons.
+# The texts are numbers of texts in L2GameDataName.dat. The rows of P152 with these changes: the counts of the drops,
+# of their textures and of the meshes and textures of the item are 4 bytes, each drop has an effect and its place,
+# a quest is 4 bytes, the short after attribution is gone, and one byte ends the row. The tables of E542 read so, in
+# both worlds.
+format  1
+file    EtcItemgrp.dat
+title   Essence 542 and later
+
+list uint records {
+    byte    tag
+    uint    id                  # the item id of the server
+    byte    dropType
+    byte    dropAnimType
+    byte    dropRadius
+    byte    dropHeight
+    list uint drops {
+        name    dropMesh
+        list uint name dropTextures
+        name    dropEffect      # an effect on the item on the ground, or None
+        name    dropEffectPlace # where the effect stands, or None
+    }
+    name    icon                # the icon of the inventory, such as icon.etc_adena_i00
+    name    icon2
+    name    icon3
+    name    icon4
+    name    icon5
+    short   durability
+    short   weight
+    byte    material
+    byte    crystallizable
+    list byte uint quests
+    byte    color
+    byte    attribution
+    name    iconPanel
+    name    dropSoundType
+    byte    inventoryType
+    list uint name meshes
+    list uint name textures
+    name    dropSound
+    name    equipSound
+    byte    consumeType
+    uint    etcItemType
+    byte    crystalType
+    byte    unknown1            # 0 in nearly every row
+}

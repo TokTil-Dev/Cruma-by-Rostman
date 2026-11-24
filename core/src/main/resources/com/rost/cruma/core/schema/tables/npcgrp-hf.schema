@@ -1,0 +1,34 @@
+# npcgrp.dat of High Five: how the client draws each NPC.
+# The texts stand in the rows. The tables of High Five read so.
+format  1
+file    npcgrp.dat
+title   High Five
+
+list uint records {
+    uint    id                  # the NPC id of npcdata.txt
+    string  class               # the class of the pawn, such as LineageMonster.gremlin
+    string  mesh                # the skeletal mesh, such as LineageMonsters.gremlin_m00
+    list uint string textures   # the textures that replace the materials of the mesh, by slot
+    list uint string secondTextures
+    list compact uint properties
+    float   speed
+    list uint string unknownNames
+    list uint string attackSounds
+    list uint string defenseSounds
+    list uint string damageSounds
+    list uint decorations {
+        string decoration
+        float  scale
+    }
+    list compact uint quests
+    list compact uint questSteps
+    string  attackEffect
+    uint    unknown
+    float   soundVolume
+    float   soundRadius
+    float   soundRandom
+    uint    social
+    uint    hpShowable
+    list uint fstring dialogSounds
+    uint    summonSort
+}

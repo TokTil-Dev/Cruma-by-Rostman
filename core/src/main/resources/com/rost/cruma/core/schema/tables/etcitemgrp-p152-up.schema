@@ -1,0 +1,41 @@
+# EtcItemgrp.dat of P152 and later: the items that are neither weapons nor armor, and their icons.
+# The texts are numbers of texts in L2GameDataName.dat. The tables of P152, 162, 166 and 196 read so.
+format  1
+file    EtcItemgrp.dat
+title   P152 and later
+
+list uint records {
+    byte    tag
+    uint    id                  # the item id of the server
+    byte    dropType
+    byte    dropAnimType
+    byte    dropRadius
+    byte    dropHeight
+    list byte drops {
+        name    dropMesh
+        list byte name dropTextures
+    }
+    name    icon                # the icon of the inventory, such as icon.etc_adena_i00
+    name    icon2
+    name    icon3
+    name    icon4
+    name    icon5
+    short   durability
+    short   weight
+    byte    material
+    byte    crystallizable
+    list byte ushort quests
+    byte    color
+    byte    attribution
+    short   properties
+    name    iconPanel
+    name    dropSoundType
+    byte    inventoryType
+    list byte name meshes
+    list byte name textures
+    name    dropSound
+    name    equipSound
+    byte    consumeType
+    uint    etcItemType
+    byte    crystalType
+}

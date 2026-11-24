@@ -1,0 +1,16 @@
+# WeaponGrp_Res.dat of Essence 563 and later: the meshes and the textures of the weapons. A row of Weapongrp.dat
+# names its row here by its field res, and several weapons share a row. The client has one such table for its three
+# worlds. The texts are numbers of texts in L2GameDataName.dat. The table of E563 reads so.
+format  1
+file    WeaponGrp_Res.dat
+title   Essence 563 and later
+
+list uint records {
+    ushort  id                  # the number that res of Weapongrp.dat names, from 1
+    list byte parts {           # the meshes, two for a dual weapon
+        name    mesh            # such as LineageWeapons.small_sword_m00_wp
+        byte    value           # 1 in most rows, else 2 or 3
+        list 11 float numbers   # sizes and places, such as 1.0 0.5 0.5 10.0 0 0 2.0 0 0 1.0 1.5
+    }
+    list byte name textures     # the textures of the meshes
+}

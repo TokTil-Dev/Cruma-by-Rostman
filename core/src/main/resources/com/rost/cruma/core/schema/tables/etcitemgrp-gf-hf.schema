@@ -1,0 +1,51 @@
+# EtcItemgrp.dat of Gracia Final and High Five: the items that are neither weapons nor armor, and their icons.
+# The texts stand in the rows. A row has three drop meshes with nine drop textures. The tables of Gracia Final
+# and High Five read so.
+format  1
+file    EtcItemgrp.dat
+title   Gracia Final and High Five
+
+list uint records {
+    uint    tag
+    uint    id                  # the item id of the server
+    uint    dropType
+    uint    dropAnimType
+    uint    dropRadius
+    uint    dropHeight
+    uint    unknown1
+    string  dropMesh1
+    string  dropMesh2
+    string  dropMesh3
+    string  dropTexture1
+    string  dropTexture2
+    string  dropTexture3
+    string  dropTexture4
+    string  dropTexture5
+    string  dropTexture6
+    string  dropTexture7
+    string  dropTexture8
+    string  dropTexture9
+    uint    dropTextureCount1   # how many of the drop textures each drop mesh takes
+    uint    dropTextureCount2
+    uint    dropTextureCount3
+    string  icon                # the icon of the inventory, such as icon.etc_adena_i00
+    string  icon2
+    string  icon3
+    string  icon4
+    string  icon5
+    int     durability
+    uint    weight
+    uint    material
+    uint    crystallizable
+    uint    unknown2            # the client leaves it as it finds it
+    list uint uint quests
+    uint    color
+    string  iconPanel
+    list uint string meshes
+    list uint string textures
+    string  dropSound
+    string  equipSound
+    uint    consumeType
+    uint    etcItemType
+    uint    crystalType
+}

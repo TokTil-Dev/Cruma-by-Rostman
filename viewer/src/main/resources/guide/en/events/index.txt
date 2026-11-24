@@ -1,0 +1,4 @@
+title: Map events
+what-are-map-events
+switch-events
+effects-by-time

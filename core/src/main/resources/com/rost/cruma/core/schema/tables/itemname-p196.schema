@@ -1,0 +1,14 @@
+# ItemName-e.dat of P196: the name and the description of each item in the language of the client.
+# The rows of P152, then a list of the items that the client can use by itself, such as potions and buffs.
+# The tables of 196 read so, in both worlds.
+format  1
+file    ItemName-*.dat
+title   P196
+like    P152 to 166
+
+after records {
+    list compact automaticUses {
+        uint    item            # the item id of the server
+        uint    automaticUse    # 1 in every row of the tables of 196
+    }
+}

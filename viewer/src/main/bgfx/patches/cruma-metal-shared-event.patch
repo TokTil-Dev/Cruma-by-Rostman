@@ -1,0 +1,771 @@
+diff --git a/src/bgfx.cpp b/src/bgfx.cpp
+--- a/src/bgfx.cpp
++++ b/src/bgfx.cpp
+@@ -9,6 +9,7 @@
+ #include <bgfx/embedded_shader.h>
+ #include <bx/file.h>
+ #include <bx/mutex.h>
++#include <atomic>
+ 
+ #include "topology.h"
+ 
+@@ -463,6 +464,33 @@
+ 	const InternalData* getInternalData()
+ 	{
+ 		return &g_internalData;
++	}
++
++	static std::atomic<bool> s_crumaTraceFrame { false };
++	static std::atomic<bool> s_crumaCopyPoolEnabled { false };
++	static void crumaDrainCopyPool();
++
++	extern "C" void cruma_bgfx_set_copy_pool(uint32_t _enabled)
++	{
++		BGFX_CHECK_API_THREAD();
++		s_crumaCopyPoolEnabled.store(0 != _enabled, std::memory_order_relaxed);
++	}
++
++	extern "C" void cruma_bgfx_set_frame_trace(uint32_t _enabled)
++	{
++		BGFX_CHECK_API_THREAD();
++		s_crumaTraceFrame.store(0 != _enabled, std::memory_order_relaxed);
++	}
++
++	extern "C" bool cruma_bgfx_frame_trace_enabled()
++	{
++		return s_crumaTraceFrame.load(std::memory_order_relaxed);
++	}
++
++	extern "C" uint32_t cruma_bgfx_api_frame_number()
++	{
++		BGFX_CHECK_API_THREAD();
++		return s_ctx->m_submit->m_frameNum;
+ 	}
+ 
+ 	uintptr_t overrideInternal(TextureHandle _handle, uintptr_t _ptr, uint16_t _layerIndex)
+@@ -2771,6 +2799,8 @@
+ 
+ 	uint32_t Context::frame(uint8_t _flags)
+ 	{
++		const bool trace = cruma_bgfx_frame_trace_enabled();
++		const int64_t traceBegin = trace ? bx::getHPCounter() : 0;
+ 		m_encoder[0].end(true);
+ 
+ #if BGFX_CONFIG_MULTITHREADED
+@@ -2800,10 +2830,29 @@
+ 
+ 		BGFX_PROFILER_SCOPE("bgfx/API thread frame", kColorSubmit);
+ 		// wait for render thread to finish
++		const int64_t tracePrepared = trace ? bx::getHPCounter() : 0;
+ 		renderSemWait();
++		const int64_t traceWaited = trace ? bx::getHPCounter() : 0;
+ 		frameNoRenderWait();
++		const int64_t traceSwapped = trace ? bx::getHPCounter() : 0;
+ 
+ 		m_encoder[0].begin(m_submit, 0);
++		if (trace)
++		{
++			const int64_t traceFinished = bx::getHPCounter();
++			const double milliseconds = 1000.0 / double(bx::getHPFrequency() );
++			if ((traceFinished - traceBegin) * milliseconds > 5.0)
++			{
++				bx::debugPrintf("[cruma-native-frame] frame=%u prepareMs=%.6f renderWaitMs=%.6f swapMs=%.6f encoderBeginMs=%.6f totalMs=%.6f\n"
++					, frameNum
++					, (tracePrepared - traceBegin) * milliseconds
++					, (traceWaited - tracePrepared) * milliseconds
++					, (traceSwapped - traceWaited) * milliseconds
++					, (traceFinished - traceSwapped) * milliseconds
++					, (traceFinished - traceBegin) * milliseconds
++					);
++			}
++		}
+ 
+ 		return frameNum;
+ 	}
+@@ -2923,6 +2972,8 @@
+ 		NSAutoreleasePoolScope pool;
+ #endif // BX_PLATFORM_OSX || BX_PLATFORM_IOS || BX_PLATFORM_VISIONOS
+ 
++		const bool trace = cruma_bgfx_frame_trace_enabled();
++		const int64_t traceBegin = trace ? bx::getHPCounter() : 0;
+ 		if (!m_flipAfterRender)
+ 		{
+ 			if (!m_flushPrevFrame)
+@@ -2932,13 +2983,17 @@
+ 			}
+ 		}
+ 
++		const int64_t traceFlipped = trace ? bx::getHPCounter() : 0;
+ 		if (apiSemWait(_msecs) )
+ 		{
++			const int64_t traceWaited = trace ? bx::getHPCounter() : 0;
++			const uint32_t traceFrame = m_render->m_frameNum;
+ 			{
+ 				BGFX_PROFILER_SCOPE("bgfx/Exec commands pre", kColorResource);
+ 				rendererExecCommands(m_render->m_cmdPre);
+ 			}
+ 
++			const int64_t tracePre = trace ? bx::getHPCounter() : 0;
+ 			if (m_rendererInitialized)
+ 			{
+ 				{
+@@ -2957,11 +3012,23 @@
+ 				}
+ 			}
+ 
++			const int64_t traceSubmit = trace ? bx::getHPCounter() : 0;
+ 			{
+ 				BGFX_PROFILER_SCOPE("bgfx/Exec commands post", kColorResource);
+ 				rendererExecCommands(m_render->m_cmdPost);
+ 			}
+ 
++			if (trace)
++			{
++				const int64_t tracePost = bx::getHPCounter();
++				const double ms = 1000.0 / double(bx::getHPFrequency() );
++				if ((tracePost - traceWaited + traceFlipped - traceBegin) * ms > 16.0)
++				{
++					bx::debugPrintf("[cruma-native-render] frame=%u previousFlipMs=%.6f apiWaitMs=%.6f preMs=%.6f submitMs=%.6f postMs=%.6f\n"
++						, traceFrame, (traceFlipped - traceBegin) * ms, (traceWaited - traceFlipped) * ms
++						, (tracePre - traceWaited) * ms, (traceSubmit - tracePre) * ms, (tracePost - traceSubmit) * ms);
++				}
++			}
+ 			renderSemPost();
+ 
+ 			if (m_flipAfterRender)
+@@ -4216,6 +4283,7 @@
+ 		BGFX_CHECK_API_THREAD();
+ 		Context* ctx = s_ctx; // it's going to be NULLd inside shutdown.
+ 		ctx->shutdown();
++		crumaDrainCopyPool();
+ 		BX_ASSERT(NULL == s_ctx, "bgfx is should be uninitialized here.");
+ 
+ 		bx::deleteObject(g_allocator, ctx, Context::kAlignment);
+@@ -4736,20 +4804,160 @@
+ 		return mem;
+ 	}
+ 
+-	const Memory* copy(const void* _data, uint32_t _size)
+-	{
+-		BX_ASSERT(0 < _size, "Invalid memory operation. _size is 0.");
+-		const Memory* mem = alloc(_size);
+-		bx::memCopy(mem->data, _data, _size);
+-		return mem;
+-	}
+-
+ 	struct MemoryRef
+ 	{
+ 		Memory mem;
+ 		ReleaseFn releaseFn;
+ 		void* userData;
+ 	};
++
++	struct CrumaCopyBlock
++	{
++		MemoryRef ref;
++		CrumaCopyBlock* next;
++		uint32_t bin;
++		uint32_t capacity;
++	};
++	static bx::Mutex s_crumaCopyPoolMutex;
++	static CrumaCopyBlock* s_crumaCopyBins[16] = {};
++	static uint32_t s_crumaCopyBinCounts[16] = {};
++	static uint64_t s_crumaCopyBinHits[16] = {};
++	static uint64_t s_crumaCopyBinMisses[16] = {};
++	static uint64_t s_crumaCopyCachedBytes = 0;
++	static uint64_t s_crumaCopyHits = 0;
++	static uint64_t s_crumaCopyMisses = 0;
++	static uint64_t s_crumaCopyInUse = 0;
++
++	extern "C" uint64_t cruma_bgfx_copy_pool_stat(uint32_t _stat)
++	{
++		BGFX_MUTEX_SCOPE(s_crumaCopyPoolMutex);
++		switch (_stat)
++		{
++		case 0: return s_crumaCopyCachedBytes;
++		case 1: return s_crumaCopyHits;
++		case 2: return s_crumaCopyMisses;
++		case 3: return s_crumaCopyInUse;
++		default: return 0;
++		}
++	}
++
++	static void crumaReleaseCopyBlock(void*, void* _userData)
++	{
++		CrumaCopyBlock* block = static_cast<CrumaCopyBlock*>(_userData);
++		{
++			BGFX_MUTEX_SCOPE(s_crumaCopyPoolMutex);
++			BX_ASSERT(s_crumaCopyInUse > 0, "Released an unowned upload block");
++			--s_crumaCopyInUse;
++			if (s_crumaCopyPoolEnabled.load(std::memory_order_relaxed)
++			&&  s_crumaCopyBinCounts[block->bin] < bx::max<uint32_t>(8, 1024 * 1024 / block->capacity))
++			{
++				block->next = s_crumaCopyBins[block->bin];
++				s_crumaCopyBins[block->bin] = block;
++				++s_crumaCopyBinCounts[block->bin];
++				s_crumaCopyCachedBytes += block->capacity;
++				return;
++			}
++		}
++		bx::free(g_allocator, block);
++	}
++
++	static const Memory* crumaAllocCopy(uint32_t _size)
++	{
++		uint32_t bin = 0;
++		uint32_t capacity = 64;
++		while (capacity < _size)
++		{
++			++bin;
++			capacity *= 2;
++		}
++		CrumaCopyBlock* block;
++		{
++			BGFX_MUTEX_SCOPE(s_crumaCopyPoolMutex);
++			block = s_crumaCopyBins[bin];
++			++s_crumaCopyInUse;
++			if (NULL != block)
++			{
++				s_crumaCopyBins[bin] = block->next;
++				--s_crumaCopyBinCounts[bin];
++				s_crumaCopyCachedBytes -= capacity;
++				++s_crumaCopyHits;
++				++s_crumaCopyBinHits[bin];
++			}
++			else
++			{
++				++s_crumaCopyMisses;
++				++s_crumaCopyBinMisses[bin];
++			}
++		}
++		if (NULL == block)
++		{
++			block = static_cast<CrumaCopyBlock*>(bx::alloc(g_allocator, sizeof(CrumaCopyBlock) + capacity) );
++			block->bin = bin;
++			block->capacity = capacity;
++		}
++		block->ref.mem.size = _size;
++		block->ref.mem.data = reinterpret_cast<uint8_t*>(block + 1);
++		block->ref.releaseFn = crumaReleaseCopyBlock;
++		block->ref.userData = block;
++		return &block->ref.mem;
++	}
++
++	static void crumaDrainCopyPool()
++	{
++		s_crumaCopyPoolEnabled.store(false, std::memory_order_relaxed);
++		BGFX_MUTEX_SCOPE(s_crumaCopyPoolMutex);
++		BX_ASSERT(0 == s_crumaCopyInUse, "Upload blocks still owned after renderer shutdown");
++		for (uint32_t bin = 0; bin < BX_COUNTOF(s_crumaCopyBins); ++bin)
++		{
++			CrumaCopyBlock* block = s_crumaCopyBins[bin];
++			while (NULL != block)
++			{
++				CrumaCopyBlock* next = block->next;
++				bx::free(g_allocator, block);
++				block = next;
++			}
++			s_crumaCopyBins[bin] = NULL;
++			s_crumaCopyBinCounts[bin] = 0;
++		}
++		const uint64_t retiredBytes = s_crumaCopyCachedBytes;
++		s_crumaCopyCachedBytes = 0;
++		if (cruma_bgfx_frame_trace_enabled() )
++		{
++			bx::debugPrintf("[cruma-copy-pool] hits=%llu misses=%llu retiredBytes=%llu cachedBytes=%llu inUse=%llu\n"
++				, (unsigned long long)s_crumaCopyHits, (unsigned long long)s_crumaCopyMisses
++				, (unsigned long long)retiredBytes, (unsigned long long)s_crumaCopyCachedBytes
++				, (unsigned long long)s_crumaCopyInUse);
++			for (uint32_t bin = 0; bin < BX_COUNTOF(s_crumaCopyBins); ++bin)
++			{
++				bx::debugPrintf("[cruma-copy-pool-bin] capacity=%u hits=%llu misses=%llu\n", 64u << bin
++					, (unsigned long long)s_crumaCopyBinHits[bin], (unsigned long long)s_crumaCopyBinMisses[bin]);
++			}
++		}
++	}
++
++	const Memory* copy(const void* _data, uint32_t _size)
++	{
++		BX_ASSERT(0 < _size, "Invalid memory operation. _size is 0.");
++		const bool trace = cruma_bgfx_frame_trace_enabled();
++		const int64_t traceBegin = trace ? bx::getHPCounter() : 0;
++		const Memory* mem = _size <= 2 * 1024 * 1024
++			&& s_crumaCopyPoolEnabled.load(std::memory_order_relaxed)
++			? crumaAllocCopy(_size) : alloc(_size);
++		const int64_t traceAllocated = trace ? bx::getHPCounter() : 0;
++		bx::memCopy(mem->data, _data, _size);
++		if (trace)
++		{
++			const int64_t traceCopied = bx::getHPCounter();
++			const double ms = 1000.0 / double(bx::getHPFrequency() );
++			if ((traceCopied - traceBegin) * ms > 5.0)
++			{
++				bx::debugPrintf("[cruma-native-copy] bytes=%u allocateMs=%.6f copyMs=%.6f totalMs=%.6f\n"
++					, _size, (traceAllocated - traceBegin) * ms, (traceCopied - traceAllocated) * ms
++					, (traceCopied - traceBegin) * ms);
++			}
++		}
++		return mem;
++	}
+ 
+ 	const Memory* makeRef(const void* _data, uint32_t _size, ReleaseFn _releaseFn, void* _userData)
+ 	{
+@@ -4773,6 +4981,11 @@
+ 		if (isMemoryRef(mem) )
+ 		{
+ 			MemoryRef* memRef = reinterpret_cast<MemoryRef*>(mem);
++			if (crumaReleaseCopyBlock == memRef->releaseFn)
++			{
++				crumaReleaseCopyBlock(mem->data, memRef->userData);
++				return;
++			}
+ 			if (NULL != memRef->releaseFn)
+ 			{
+ 				memRef->releaseFn(mem->data, memRef->userData);
+diff --git a/src/renderer_mtl.cpp b/src/renderer_mtl.cpp
+--- a/src/renderer_mtl.cpp
++++ b/src/renderer_mtl.cpp
+@@ -24,6 +24,128 @@
+ 
+ namespace bgfx { namespace mtl
+ {
++	extern "C" uint32_t cruma_bgfx_api_frame_number();
++	extern "C" bool cruma_bgfx_frame_trace_enabled();
++
++	static uint32_t s_crumaMetalTraceFrame = 0;
++	struct CrumaMetalTraceScope
++	{
++		CrumaMetalTraceScope(const char* _name)
++			: m_name(_name), m_begin(cruma_bgfx_frame_trace_enabled() ? bx::getHPCounter() : 0) {}
++		~CrumaMetalTraceScope()
++		{
++			if (0 != m_begin)
++			{
++				const double ms = (bx::getHPCounter() - m_begin) * 1000.0 / double(bx::getHPFrequency() );
++				if (ms > 5.0)
++				{
++					bx::debugPrintf("[cruma-metal-phase] frame=%u phase=%s elapsedMs=%.6f\n", s_crumaMetalTraceFrame, m_name, ms);
++				}
++			}
++		}
++		const char* m_name;
++		int64_t m_begin;
++	};
++
++	struct CrumaMetalSharedEventFence
++	{
++		MTL::SharedEvent* m_waitEvent;
++		uint64_t m_waitValue;
++		MTL::SharedEvent* m_signalEvent;
++		uint64_t m_signalValue;
++		uint32_t m_frameNum;
++	};
++
++	static bx::Mutex s_crumaMetalSharedEventMutex;
++	static CrumaMetalSharedEventFence s_crumaMetalPendingFences[32];
++	static uint32_t s_crumaMetalPendingFenceCount = 0;
++	static CrumaMetalSharedEventFence s_crumaMetalActiveFences[32];
++	static uint32_t s_crumaMetalActiveFenceCount = 0;
++
++	extern "C" __attribute__((visibility("default")))
++	uint32_t cruma_bgfx_metal_enqueue_shared_event_fence(
++		void* _waitEvent, uint64_t _waitValue,
++		void* _signalEvent, uint64_t _signalValue)
++	{
++		if (NULL == _waitEvent || 0 == _waitValue
++		||  NULL == _signalEvent || 0 == _signalValue)
++		{
++			return 0;
++		}
++
++		BGFX_MUTEX_SCOPE(s_crumaMetalSharedEventMutex);
++		if (s_crumaMetalPendingFenceCount >= BX_COUNTOF(s_crumaMetalPendingFences))
++		{
++			return 0;
++		}
++
++		MTL::SharedEvent* waitEvent = static_cast<MTL::SharedEvent*>(_waitEvent);
++		MTL::SharedEvent* signalEvent = static_cast<MTL::SharedEvent*>(_signalEvent);
++		waitEvent->retain();
++		signalEvent->retain();
++		s_crumaMetalPendingFences[s_crumaMetalPendingFenceCount++] = {
++			waitEvent, _waitValue, signalEvent, _signalValue, cruma_bgfx_api_frame_number()
++		};
++		return 1;
++	}
++
++	static void crumaMetalEncodeSharedEventWaits(
++		MTL::CommandBuffer* _commandBuffer, CommandQueueMtl& _commandQueue, uint32_t _frameNum)
++	{
++		CrumaMetalSharedEventFence fences[BX_COUNTOF(s_crumaMetalPendingFences)];
++		uint32_t count;
++		{
++			BGFX_MUTEX_SCOPE(s_crumaMetalSharedEventMutex);
++			count = 0;
++			uint32_t remaining = 0;
++			for (uint32_t ii = 0; ii < s_crumaMetalPendingFenceCount; ++ii)
++			{
++				const CrumaMetalSharedEventFence& fence = s_crumaMetalPendingFences[ii];
++				if (int32_t(_frameNum - fence.m_frameNum) >= 0)
++				{
++					fences[count++] = fence;
++				}
++				else
++				{
++					s_crumaMetalPendingFences[remaining++] = fence;
++				}
++			}
++			s_crumaMetalPendingFenceCount = remaining;
++		}
++
++		BX_ASSERT(0 == s_crumaMetalActiveFenceCount,
++			"Previous cruma Metal consumer signals were not encoded");
++		for (uint32_t ii = 0; ii < count; ++ii)
++		{
++			_commandBuffer->encodeWait(fences[ii].m_waitEvent, fences[ii].m_waitValue);
++			_commandQueue.release(fences[ii].m_waitEvent);
++			s_crumaMetalActiveFences[s_crumaMetalActiveFenceCount++] = fences[ii];
++		}
++	}
++
++	static void crumaMetalEncodeSharedEventSignals(
++		MTL::CommandBuffer* _commandBuffer, CommandQueueMtl& _commandQueue)
++	{
++		for (uint32_t ii = 0; ii < s_crumaMetalActiveFenceCount; ++ii)
++		{
++			const CrumaMetalSharedEventFence& fence = s_crumaMetalActiveFences[ii];
++			_commandBuffer->encodeSignalEvent(fence.m_signalEvent, fence.m_signalValue);
++			_commandQueue.release(fence.m_signalEvent);
++		}
++		s_crumaMetalActiveFenceCount = 0;
++	}
++
++	static void crumaMetalReleasePendingSharedEvents()
++	{
++		BGFX_MUTEX_SCOPE(s_crumaMetalSharedEventMutex);
++		for (uint32_t ii = 0; ii < s_crumaMetalPendingFenceCount; ++ii)
++		{
++			s_crumaMetalPendingFences[ii].m_waitEvent->release();
++			s_crumaMetalPendingFences[ii].m_signalEvent->release();
++		}
++		s_crumaMetalPendingFenceCount = 0;
++	}
++
+ 	static char s_viewName[BGFX_CONFIG_MAX_VIEWS][BGFX_CONFIG_MAX_VIEW_NAME];
+ 
+ 	inline void setViewType(ViewId _view, const bx::StringView _str)
+@@ -853,12 +975,41 @@
+ 
+ 	struct ChunkedScratchBufferMtl : ChunkedScratchBufferT<ChunkedScratchBufferMtl, MTL::Buffer*, ChunkMtl>
+ 	{
++		typedef ChunkedScratchBufferT<ChunkedScratchBufferMtl, MTL::Buffer*, ChunkMtl> Base;
++
++		void begin()
++		{
++			m_previous.buffer = NULL;
++			Base::begin();
++		}
++
++		void write(ChunkedScratchBufferOffset& _out, const void* _vsData, uint32_t _vsSize, const void* _fsData = NULL, uint32_t _fsSize = 0)
++		{
++			if (NULL != m_previous.buffer && _vsSize == m_previousVsSize && _fsSize == m_previousFsSize)
++			{
++				const uint8_t* previous = static_cast<const uint8_t*>(m_previous.buffer->contents());
++				if ((0 == _vsSize || (NULL != _vsData && 0 == bx::memCmp(previous + m_previous.offsets[0], _vsData, _vsSize)))
++				&&  (0 == _fsSize || (NULL != _fsData && 0 == bx::memCmp(previous + m_previous.offsets[1], _fsData, _fsSize))))
++				{
++					_out = m_previous;
++					return;
++				}
++			}
++			Base::write(_out, _vsData, _vsSize, _fsData, _fsSize);
++			m_previous = _out;
++			m_previousVsSize = _vsSize;
++			m_previousFsSize = _fsSize;
++		}
++
+ 		void createUniform(uint32_t _chunkSize, uint32_t _numChunks);
+ 
+ 		void createChunk(ChunkMtl& _chunk);
+ 		void destroyChunk(ChunkMtl& _chunk);
+ 		void flushChunk(ChunkMtl& _chunk, uint32_t _size);
+ 		uint32_t currentFrameInFlight() const;
++		ChunkedScratchBufferOffset m_previous = { NULL, { 0, 0 } };
++		uint32_t m_previousVsSize = 0;
++		uint32_t m_previousFsSize = 0;
+ 	};
+ 
+ 	struct RendererContextMtl;
+@@ -1263,6 +1414,7 @@
+ 				NS::AutoreleasePool* pool = NS::AutoreleasePool::alloc()->init();
+ 
+ 				m_gpuTimer.shutdown();
++				crumaMetalReleasePendingSharedEvents();
+ 				m_cmd.kick(false, true);
+ 
+ 				pool->release();
+@@ -2037,6 +2189,7 @@
+ 
+ 		void flip() override
+ 		{
++			CrumaMetalTraceScope trace("present");
+ 			bool needPresent = false;
+ 			for (uint32_t ii = 0, num = m_numWindows; ii < num; ++ii)
+ 			{
+@@ -3322,7 +3475,10 @@
+ 
+ 				{
+ 					MTL::RenderPipelineReflection* reflection = NULL;
+-					pso->m_rps = newRenderPipelineStateWithDescriptor(m_device, pd, MTL::PipelineOptionBufferTypeInfo, &reflection);
++					{
++						CrumaMetalTraceScope trace("render-pipeline-compile");
++						pso->m_rps = newRenderPipelineStateWithDescriptor(m_device, pd, MTL::PipelineOptionBufferTypeInfo, &reflection);
++					}
+ 
+ 					if (NULL != reflection)
+ 					{
+@@ -3375,6 +3531,7 @@
+ 				PipelineStateMtl* pso = BX_NEW(g_allocator, PipelineStateMtl);
+ 				program.m_computePS = pso;
+ 
++				CrumaMetalTraceScope trace("compute-pipeline-create");
+ 				MTL::ComputePipelineReflection* reflection = NULL;
+ 				pso->m_cps = newComputePipelineStateWithFunction(m_device,
+ 					  program.m_vsh->m_function
+@@ -4007,21 +4164,17 @@
+ 			const uint32_t start = _offset & ~3;
+ 			const uint32_t end   = bx::strideAlign(_offset + _size, 4);
+ 
+-			MTL::Buffer* temp = s_renderMtl->m_device->newBuffer(
+-				  m_dynamic + start
+-				, end - start
+-				, MTL::ResourceCPUCacheModeDefaultCache
+-				);
+-
+-			bce->copyFromBuffer(temp, 0, m_ptr, start, end - start);
+-
+-			s_renderMtl->m_cmd.release(temp);
++			uint32_t sourceOffset;
++			MTL::Buffer* temp = s_renderMtl->m_cmd.stageUpload(
++				s_renderMtl->m_device, m_dynamic + start, end - start, sourceOffset);
++			bce->copyFromBuffer(temp, sourceOffset, m_ptr, start, end - start);
+ 		}
+ 		else
+ 		{
+-			MTL::Buffer* temp = s_renderMtl->m_device->newBuffer(_data, _size, MTL::ResourceCPUCacheModeDefaultCache);
+-			bce->copyFromBuffer(temp, 0, m_ptr, _offset, _size);
+-			s_renderMtl->m_cmd.release(temp);
++			uint32_t sourceOffset;
++			MTL::Buffer* temp = s_renderMtl->m_cmd.stageUpload(
++				s_renderMtl->m_device, _data, _size, sourceOffset);
++			bce->copyFromBuffer(temp, sourceOffset, m_ptr, _offset, _size);
+ 		}
+ 	}
+ 
+@@ -5047,6 +5200,7 @@
+ 	{
+ 		if (NULL == m_drawableTexture)
+ 		{
++			CrumaMetalTraceScope trace("drawable-acquire");
+ 			const bool occluded = isWindowOccluded(m_nwh);
+ 
+ 			m_drawable = occluded ? NULL : m_metalLayer->nextDrawable();
+@@ -5285,6 +5439,8 @@
+ 			}
+ 
+ 			m_activeCommandBuffer->commit();
++			m_uploadBuffer = NULL;
++			m_uploadOffset = 0;
+ 
+ 			if (_waitForFinish)
+ 			{
+@@ -5299,6 +5455,26 @@
+ 				pool->release();
+ 			}
+ 		}
++	}
++
++	MTL::Buffer* CommandQueueMtl::stageUpload(MTL::Device* _device, const void* _data, uint32_t _size, uint32_t& _offset)
++	{
++		const uint32_t pageSize = 1024 * 1024;
++		const uint32_t alignedOffset = bx::strideAlign(m_uploadOffset, 4);
++		if (NULL == m_uploadBuffer || uint64_t(alignedOffset) + _size > m_uploadBuffer->length())
++		{
++			m_uploadBuffer = _device->newBuffer(bx::max(pageSize, _size), MTL::ResourceCPUCacheModeDefaultCache);
++			m_uploadOffset = 0;
++			release(m_uploadBuffer);
++		}
++		else
++		{
++			m_uploadOffset = alignedOffset;
++		}
++		_offset = m_uploadOffset;
++		bx::memCopy(static_cast<uint8_t*>(m_uploadBuffer->contents()) + _offset, _data, _size);
++		m_uploadOffset += _size;
++		return m_uploadBuffer;
+ 	}
+ 
+ 	void CommandQueueMtl::finish(bool _finishAll)
+@@ -5330,7 +5506,11 @@
+ 
+ 	void CommandQueueMtl::consume()
+ 	{
+-		m_framesSemaphore.wait();
++		{
++			CrumaMetalTraceScope trace("gpu-frame-latency-wait");
++			m_framesSemaphore.wait();
++		}
++		CrumaMetalTraceScope trace("deferred-resource-release");
+ 		m_releaseReadIndex = (m_releaseReadIndex + 1) % BGFX_CONFIG_MAX_FRAME_LATENCY;
+ 
+ 		ResourceArray& ra = m_release[m_releaseReadIndex];
+@@ -5763,6 +5943,7 @@
+ 
+ 	void RendererContextMtl::submit(Frame* _render, const ClearQuad& _clearQuad, const MipGen& /*_mipGen*/, TextVideoMemBlitter& _textVideoMemBlitter)
+ 	{
++		s_crumaMetalTraceFrame = _render->m_frameNum;
+ 		m_cmd.finish(false);
+ 
+ 		m_colorPalette = _render->m_colorPalette;
+@@ -5771,6 +5952,8 @@
+ 		{
+ 			m_commandBuffer = m_cmd.alloc();
+ 		}
++		endEncoding();
++		crumaMetalEncodeSharedEventWaits(m_commandBuffer, m_cmd, _render->m_frameNum);
+ 
+ 		if (_render->m_capture)
+ 		{
+@@ -7135,6 +7318,7 @@
+ 			rce->endEncoding();
+ 		}
+ 
++		crumaMetalEncodeSharedEventSignals(m_commandBuffer, m_cmd);
+ 		m_uniformScratchBuffer.end();
+ 		m_bufferIndex = (m_bufferIndex + 1) % BGFX_CONFIG_MAX_FRAME_LATENCY;
+ 
+diff --git a/src/renderer_mtl.h b/src/renderer_mtl.h
+--- a/src/renderer_mtl.h
++++ b/src/renderer_mtl.h
+@@ -573,6 +573,8 @@
+ 			, m_releaseWriteIndex(0)
+ 			, m_releaseReadIndex(0)
+ 			, m_maxFrameLatency(BGFX_CONFIG_MAX_FRAME_LATENCY)
++			, m_uploadBuffer(NULL)
++			, m_uploadOffset(0)
+ 		{
+ 		}
+ 
+@@ -582,6 +584,7 @@
+ 		void kick(bool _endFrame, bool _waitForFinish);
+ 		void finish(bool _finishAll);
+ 		void release(NS::Object* _ptr);
++		MTL::Buffer* stageUpload(MTL::Device* _device, const void* _data, uint32_t _size, uint32_t& _offset);
+ 
+ 		template<typename T>
+ 		void release(T* _ptr) { release( (NS::Object*)(const void*)_ptr ); }
+@@ -598,6 +601,8 @@
+ 		uint32_t m_maxFrameLatency;
+ 		typedef stl::vector<NS::Object*> ResourceArray;
+ 		ResourceArray m_release[BGFX_CONFIG_MAX_FRAME_LATENCY];
++		MTL::Buffer* m_uploadBuffer;
++		uint32_t m_uploadOffset;
+ 	};
+ 
+ 	struct TimerQueryMtl
+ 
+diff --git a/src/bgfx_p.h b/src/bgfx_p.h
+--- a/src/bgfx_p.h
++++ b/src/bgfx_p.h
+@@ -3437,6 +3437,7 @@
+ 			m_bindHashMap.clear();
+ 			m_bindLlastIdx  = 0;
+ 			m_bindEmptyIdx = UINT32_MAX;
++			m_bindPreviousIdx = UINT32_MAX;
+ 			m_bindDirty    = true;
+ 		}
+ 
+@@ -3463,6 +3464,12 @@
+ 
+ 		uint32_t bindStateIndex()
+ 		{
++			if (UINT32_MAX != m_bindPreviousIdx
++			&&  0 == bx::memCmp(&m_frame->m_renderBind[m_bindPreviousIdx], &m_bind, sizeof(m_bind) ) )
++			{
++				return m_bindPreviousIdx;
++			}
++
+ 			const uint32_t hash = bx::hash<bx::HashMurmur3>(m_bind.m_bind, sizeof(m_bind.m_bind) );
+ 
+ 			BindHashMap::const_iterator it = m_bindHashMap.find(hash);
+@@ -3475,14 +3482,14 @@
+ 					, hash
+ 					);
+ 
+-				return idx;
++				return m_bindPreviousIdx = idx;
+ 			}
+ 
+ 			const uint32_t idx = bx::atomicFetchAndAddsat<uint32_t>(&m_frame->m_numRenderBinds, 1, m_frame->m_maxDrawCalls);
+ 			m_frame->m_renderBind[idx] = m_bind;
+ 			m_bindHashMap.insert(stl::make_pair(hash, idx) );
+ 
+-			return idx;
++			return m_bindPreviousIdx = idx;
+ 		}
+ 
+ 		uint32_t bindStateIndexCached()
+@@ -3505,13 +3512,16 @@
+ 
+ 		void clearBind(uint8_t _flags)
+ 		{
+-			m_bind.clear(_flags);
+-
+ 			if (0 != (_flags & BGFX_DISCARD_BINDINGS) )
+ 			{
+ 				if (UINT32_MAX == m_bindEmptyIdx)
+ 				{
++					m_bind.clear(_flags);
+ 					m_bindEmptyIdx = bindStateIndex();
++				}
++				else
++				{
++					bx::memCopy(&m_bind, &m_frame->m_renderBind[m_bindEmptyIdx], sizeof(m_bind) );
+ 				}
+ 
+ 				m_bindLlastIdx = m_bindEmptyIdx;
+@@ -3904,6 +3914,7 @@
+ 		BindHashMap m_bindHashMap;
+ 		uint32_t    m_bindLlastIdx;
+ 		uint32_t    m_bindEmptyIdx;
++		uint32_t    m_bindPreviousIdx;
+ 		bool        m_bindDirty;
+ 
+ 		int64_t m_cpuTimeBegin;
+diff --git a/src/config.h b/src/config.h
+--- a/src/config.h
++++ b/src/config.h
+@@ -294,4 +294,3 @@
+-/// Maximum number of draw/compute calls per frame. Default is 65535 (64K - 1).
+ #ifndef BGFX_CONFIG_MAX_DRAW_CALLS
+-#	define BGFX_CONFIG_MAX_DRAW_CALLS ( (64<<10)-1)
++#	define BGFX_CONFIG_MAX_DRAW_CALLS ( (256<<10)-1)
+ #endif // BGFX_CONFIG_MAX_DRAW_CALLS
+diff --git a/src/renderer.h b/src/renderer.h
+--- a/src/renderer.h
++++ b/src/renderer.h
+@@ -649,9 +649,11 @@
+ 			ChunkTy sbc;
+ 			static_cast<Derived*>(this)->createChunk(sbc);
+ 
+-			const uint32_t lastChunk = bx::max(uint32_t(m_chunks.size()-1), 1);
+-			const uint32_t at = UINT32_MAX == _at ? lastChunk : _at;
+-			const uint32_t chunkIndex = at % bx::max(m_chunks.size(), 1);
++			const uint32_t numChunks  = uint32_t(m_chunks.size() );
++			const uint32_t chunkIndex = UINT32_MAX == _at
++				? numChunks
++				: bx::min(_at, numChunks)
++				;
+ 
+ 			m_chunkControl.resize(m_chunkSize);
+ 

@@ -1,0 +1,50 @@
+# SkillSoundgrp.dat of P152 and later: the sounds are numbers of texts in L2GameDataName.dat, each sound waits a
+# delay, and the Ertheia have voices.
+format  1
+file    SkillSoundgrp.dat
+title   P152 and later
+
+list uint records {
+    uint    id              # the skill id
+    uint    level
+    name    cast1           # a sound as the cast starts, such as SkillSound.wind_strike_cast
+    name    shot1           # a sound with the shot, such as SkillSound.wind_strike_shot
+    name    hit1            # a sound with the hit on the target, such as SkillSound.wind_strike_explotion
+    float   castVolume1     # from 0 to 255
+    float   castRadius1     # how far it is heard
+    float   castDelay1      # the seconds it waits after its moment
+    float   shotVolume1
+    float   shotRadius1
+    float   shotDelay1
+    float   hitVolume1
+    float   hitRadius1
+    float   hitDelay1
+    name    cast2
+    name    shot2
+    name    hit2
+    float   castVolume2
+    float   castRadius2
+    float   castDelay2
+    float   shotVolume2
+    float   shotRadius2
+    float   shotDelay2
+    float   hitVolume2
+    float   hitRadius2
+    float   hitDelay2
+    name    cast3
+    name    shot3
+    name    hit3
+    float   castVolume3
+    float   castRadius3
+    float   castDelay3
+    float   shotVolume3
+    float   shotRadius3
+    float   shotDelay3
+    float   hitVolume3
+    float   hitRadius3
+    float   hitDelay3
+    list 19 name castVoices  # a voice of each player figure as the cast starts, MFighter to FErtheia and one more
+    list 19 name shotVoices  # a voice of each player figure as the spell leaves
+    float   voiceVolume     # from 0 to 255, for both voices
+    float   voiceRadius
+}

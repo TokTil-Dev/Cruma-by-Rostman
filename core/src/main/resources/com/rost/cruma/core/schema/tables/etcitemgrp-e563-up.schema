@@ -1,0 +1,10 @@
+# EtcItemgrp.dat of Essence 563 and later: the rows of Essence 542 with one more byte after inventoryType.
+# The tables of E563 read so, in its three worlds.
+format  1
+file    EtcItemgrp.dat
+title   Essence 563 and later
+like    Essence 542 and later
+
+after inventoryType {
+    byte    unknownFlag         # 1 in a quarter of the rows of the Essence world, 0 in the other worlds
+}

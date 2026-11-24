@@ -1,0 +1,10 @@
+# MusicInfo.dat of P152 and later: the tracks of each music, as numbers of texts in L2GameDataName.dat. This form
+# is tried first, as one of texts can read it too and end in the wrong place.
+format  1
+file    MusicInfo.dat
+title   P152 and later
+
+list uint records {
+    uint    id              # the tile and a number of two digits, such as 162401 for the first music of 16_24
+    list uint name tracks   # the names under music/ without .ogg, played in this order
+}

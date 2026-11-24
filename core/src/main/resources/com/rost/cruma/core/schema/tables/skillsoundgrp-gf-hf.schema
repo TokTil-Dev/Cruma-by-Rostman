@@ -1,0 +1,40 @@
+# SkillSoundgrp.dat of Gracia Final and High Five: the form of Interlude with the voices of the Kamael.
+format  1
+file    SkillSoundgrp.dat
+title   Gracia Final and High Five
+
+list uint records {
+    uint    id              # the skill id
+    uint    level
+    string  cast1           # a sound as the cast starts, such as SkillSound.wind_strike_cast
+    string  shot1           # a sound with the shot, such as SkillSound.wind_strike_shot
+    string  hit1            # a sound with the hit on the target, such as SkillSound.wind_strike_explotion
+    float   castVolume1     # from 0 to 255
+    float   castRadius1     # how far it is heard
+    float   shotVolume1
+    float   shotRadius1
+    float   hitVolume1
+    float   hitRadius1
+    string  cast2
+    string  shot2
+    string  hit2
+    float   castVolume2
+    float   castRadius2
+    float   shotVolume2
+    float   shotRadius2
+    float   hitVolume2
+    float   hitRadius2
+    string  cast3
+    string  shot3
+    string  hit3
+    float   castVolume3
+    float   castRadius3
+    float   shotVolume3
+    float   shotRadius3
+    float   hitVolume3
+    float   hitRadius3
+    list 17 string castVoices  # a voice of each player figure as the cast starts, MFighter to FKamael and one more
+    list 17 string shotVoices  # a voice of each player figure as the spell leaves
+    float   voiceVolume     # from 0 to 255, for both voices
+    float   voiceRadius
+}

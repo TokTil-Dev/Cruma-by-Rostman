@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%highlight{%d{HH:mm:ss.SSS} [%t] %-5level %logger{1} - %msg%n}" noConsoleNoAnsi="true"/>
+        </Console>
+        <SystemPropertyArbiter propertyName="cruma.log.file">
+            <RollingFile name="File" fileName="${sys:cruma.log.file}" filePattern="${sys:cruma.log.part}">
+                <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{1} - %msg%n"/>
+                <SizeBasedTriggeringPolicy size="5 MB"/>
+                <DefaultRolloverStrategy max="1"/>
+            </RollingFile>
+        </SystemPropertyArbiter>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <SystemPropertyArbiter propertyName="cruma.log.file">
+                <AppenderRef ref="File"/>
+            </SystemPropertyArbiter>
+        </Root>
+    </Loggers>
+</Configuration>

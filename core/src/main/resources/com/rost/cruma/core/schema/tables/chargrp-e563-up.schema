@@ -1,0 +1,11 @@
+# Chargrp.dat of Essence 563 and later: the rows of Essence 542 with two bytes for the number before the class,
+# where Essence 542 has four. The tables of the main world and of Classic of E563 read so, to the end of the table.
+format  1
+file    Chargrp.dat
+title   Essence 563 and later
+like    Essence 542 and later
+
+replace unknown11 {
+    ushort  unknown11           # 0, 8 for FDarkElf or 512 for FKamael: bits that the hide masks of these figures
+                                # in ArmorGrp_Res.dat have too
+}

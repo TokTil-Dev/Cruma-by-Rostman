@@ -1,0 +1,89 @@
+# Weapongrp.dat of P152 and later: how the client draws each weapon, and its icon.
+# The texts are numbers of texts in L2GameDataName.dat. The tables of P152, 162, 166 and 196 read so.
+format  1
+file    Weapongrp.dat
+title   P152 and later
+
+list uint records {
+    byte    tag
+    uint    id                  # the item id of the server
+    byte    dropType
+    byte    dropAnimType
+    byte    dropRadius
+    byte    dropHeight
+    list byte drops {
+        name    dropMesh
+        list byte name dropTextures
+    }
+    name    icon                # the icon of the inventory, such as icon.weapon_small_sword_i00
+    name    icon2
+    name    icon3
+    name    icon4
+    name    icon5
+    short   durability
+    short   weight
+    byte    material
+    byte    crystallizable
+    list byte ushort quests
+    byte    color
+    byte    attribution
+    short   properties
+    name    iconPanel
+    name    dropSoundType
+    byte    inventoryType
+    byte    bodyPart
+    byte    handness            # 0 shield, 1 one-handed, 2 two-handed, 3 dual, 4 pole, 5 bow, more for later kinds
+    byte    meshCount
+    list meshCount name meshes  # two for a dual weapon
+    list meshCount byte meshValues
+    list byte name textures     # the textures of the meshes
+    list byte name itemSounds
+    name    dropSound
+    name    equipSound
+    name    effect
+    byte    randomDamage
+    byte    weaponType
+    byte    crystalType
+    byte    mpConsume
+    byte    soulshotCount
+    byte    spiritshotCount
+    short   curvature
+    byte    unknown
+    byte    canEquipHero
+    byte    magicWeapon
+    float   ertheiaFistScale
+    short   junk
+    list byte enchants {
+        name    enchantEffect
+        float   effectOffsetX
+        float   effectOffsetY
+        float   effectOffsetZ
+        float   meshOffsetX
+        float   meshOffsetY
+        float   meshOffsetZ
+        float   meshScaleX
+        float   meshScaleY
+        float   meshScaleZ
+        float   effectVelocity
+        float   particleScale
+        float   effectScale
+        float   particleOffsetX
+        float   particleOffsetY
+        float   particleOffsetZ
+        float   ringOffsetX
+        float   ringOffsetY
+        float   ringOffsetZ
+        float   ringScaleX
+        float   ringScaleY
+        float   ringScaleZ
+    }
+    byte    variationEffect1
+    byte    variationEffect2
+    byte    variationEffect3
+    byte    variationEffect4
+    byte    variationEffect5
+    byte    variationEffect6
+    list byte name variationIcons
+    byte    normalEnsoulSlots
+    byte    specialEnsoulSlots
+}

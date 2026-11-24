@@ -1,0 +1,10 @@
+# MusicInfo.dat of Chronicle 3 to High Five: the tracks of each music by name. Chronicle 1 and 2 have the text table
+# MusicInfo.txt in its place.
+format  1
+file    MusicInfo.dat
+title   Chronicle 3 to High Five
+
+list uint records {
+    uint    id              # the tile and a number of two digits, such as 162401 for the first music of 16_24
+    list uint string tracks # the names under music/ without .ogg, played in this order
+}

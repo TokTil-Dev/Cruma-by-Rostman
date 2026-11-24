@@ -1,0 +1,11 @@
+# SkillName-e.dat of Chronicle 3: the name and the description of each skill and level, and nothing more.
+format  1
+file    SkillName-*.dat
+title   Chronicle 3
+
+list uint records {
+    uint    id
+    uint    level
+    fstring name
+    fstring desc            # the description; \n breaks a line
+}

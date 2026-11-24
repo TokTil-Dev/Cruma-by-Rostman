@@ -1,0 +1,18 @@
+# SkillSoundSource.dat of High Five and later: on whom each sound of SkillSoundgrp.dat plays. 2 puts a cast or a
+# shot sound on the target, and 1 puts a hit sound on the caster.
+format  1
+file    SkillSoundSource.dat
+title   High Five and later
+
+list uint records {
+    uint    id              # the skill id
+    int     castSource1
+    int     shotSource1
+    int     hitSource1
+    int     castSource2
+    int     shotSource2
+    int     hitSource2
+    int     castSource3
+    int     shotSource3
+    int     hitSource3
+}

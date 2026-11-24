@@ -1,0 +1,91 @@
+# Armorgrp.dat of Gracia Final and High Five: how the client draws each armor piece on each figure, and its
+# icon. The texts stand in the rows. Kamael and the NPCs have looks of their own. The tables of Gracia Final
+# and High Five read so.
+format  1
+file    Armorgrp.dat
+title   Gracia Final and High Five
+set     backPart 24             # the body part of a cloak, which never changes the hair
+
+# What one figure wears: the body part meshes and their textures, then the additional meshes, such as the
+# wings and skirts of Kamael, with two numbers each, their textures and one more texture. Cruma reads the
+# additional meshes and their textures only.
+struct Look {
+    list uint string meshes
+    list uint string textures
+    list uint addMeshes {
+        string  mesh
+        byte    value1
+        byte    value2
+    }
+    list uint string addTextures
+    string  lastTexture
+}
+
+list uint records {
+    uint    tag
+    uint    id                  # the item id of the server
+    uint    dropType
+    uint    dropAnimType
+    uint    dropRadius
+    uint    dropHeight
+    uint    unknown1
+    string  dropMesh1
+    string  dropMesh2
+    string  dropMesh3
+    string  dropTexture1
+    string  dropTexture2
+    string  dropTexture3
+    string  dropTexture4
+    string  dropTexture5
+    string  dropTexture6
+    string  dropTexture7
+    string  dropTexture8
+    string  dropTexture9
+    uint    dropTextureCount1   # how many of the drop textures each drop mesh takes
+    uint    dropTextureCount2
+    uint    dropTextureCount3
+    string  icon                # the icon of the inventory, such as icon.armor_t02_u_i00
+    string  icon2
+    string  icon3
+    string  icon4
+    string  icon5
+    int     durability
+    uint    weight
+    uint    material
+    uint    crystallizable
+    uint    unknown2            # the client leaves it as it finds it
+    list uint uint quests
+    uint    color
+    string  iconPanel
+    uint    bodyPart            # where it is worn. 8 onepiece and 9 alldress cover the legs too
+    Look    mfighter
+    Look    ffighter
+    Look    mdarkelf
+    Look    fdarkelf
+    Look    mdwarf
+    Look    fdwarf
+    Look    melf
+    Look    felf
+    Look    mmagic
+    Look    fmagic
+    Look    morc
+    Look    forc
+    Look    mshaman
+    Look    fshaman
+    Look    mkamael
+    Look    fkamael
+    Look    npc
+    string  attackEffect
+    list uint string itemSounds
+    string  dropSound
+    string  equipSound
+    uint    unknown3
+    uint    unknown4
+    uint    armorType
+    uint    crystalType
+    uint    avoidModify
+    uint    pDefense
+    uint    mDefense
+    uint    mpBonus
+    uint    unknown5
+}

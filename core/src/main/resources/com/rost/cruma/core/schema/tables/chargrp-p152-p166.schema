@@ -1,0 +1,66 @@
+# Chargrp.dat of P152 to 166: the layout of Essence 542 with 19 rows, five more bodies in place of six and 15 lists
+# of voices in place of 20. Read on the main world of P152 and 162. The rows are the races up to the Ertheia, each by
+# its sex, and an empty last row.
+format  1
+file    Chargrp.dat
+title   P152 to 166
+
+# One hair mesh and its texture, or None in both.
+struct Hair {
+    name    mesh
+    name    texture
+}
+
+# The meshes of one part of the body and their textures, then lists that the figures Cruma builds do not use.
+struct Body {
+    list uint name meshes           # such as Fighter.MFighter_m001_u
+    list uint name textures         # the textures of the meshes
+    list uint name unknown1         # additional meshes, such as the Kamael's wings, else empty
+    list uint name unknown2         # the textures of those meshes
+    list byte byte unknown3         # numbers with the additional meshes, else empty
+    list byte byte unknown4         # numbers with the additional meshes, else empty
+    list uint name unknown5         # the underwear mesh, such as BranchFighter.g_mfighter_underwear1_u
+    list uint name unknown6         # the texture of the underwear
+    list uint name unknown7
+    list uint name unknown8
+}
+
+list 19 records {
+    list 11 rows {                  # rows of hair. The first is the hair a player chooses, and a hair accessory
+                                    # picks another by its mesh name, see HairRows
+        list 15 styles {            # one for each hair style, from 0. A style the figure does not have is None
+            Hair    front           # the hair over the forehead, such as Fighter.MFighter_m000_m00_ah
+            Hair    back            # the hair at the back of the head, such as Fighter.MFighter_m000_m00_bh
+        }
+    }
+    list uint name faces            # the face meshes, such as Fighter.MFighter_m000_f
+    list uint name faceTextures     # the texture of each face
+    list uint name unknown1         # the Ertheia's ears, else None
+    list uint name unknown2         # the textures of the ears
+    list 54 unknownBodies {         # parts of the body that no row names
+        Body    body
+    }
+    Body    gloves                  # the hands, such as Fighter.MFighter_m001_g
+    Body    chest                   # the upper body, such as Fighter.MFighter_m001_u
+    Body    legs                    # the legs, such as Fighter.MFighter_m001_l
+    Body    feet                    # the feet, such as Fighter.MFighter_m001_b
+    list 5 moreBodies {             # parts of the body that no row names
+        Body    body
+    }
+    name    unknown3                # an effect of an attack
+    uint    unknown4
+    list compact name unknown5      # sounds of an attack
+    list compact name unknown6      # sounds of a defence
+    list compact name unknown7      # sounds of damage
+    list 15 unknown8 {              # voices
+        list uint name unknown9
+    }
+    list uint name unknown10        # more voices
+    uint    unknown11
+    fstring class                   # the pawn class in LineageWarrior.u, such as MFighter, or empty
+    uint    race                    # the race, such as 6 for the Ertheia
+    uint    classId                 # a class id
+    uint    sex                     # the sex, 0 for a man and 1 for a woman
+    list uint name unknown12
+    list uint name unknown13
+}
